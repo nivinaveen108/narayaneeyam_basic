@@ -1122,50 +1122,58 @@ const verseText = highlightMahapraanasAllScripts(verseRaw);
             
               return text;
             }
-            function highlightMahapraanasAllScripts(text) {
+            function highlightMahapraana(text, script = 'devanagari') {
   if (!text) return '';
   text = String(text).normalize('NFC');
 
   const sortByLengthDesc = arr => arr.sort((a,b) => b.length - a.length);
 
-  // ---------------- Devanagari ----------------
-  const devanagariPatterns = sortByLengthDesc([
-    'ख','घ','छ','झ','ठ','ढ','थ','ध','फ','भ',
-    'स्थ','स्थि','स्फ','स्फु','द्भ','द्घ','द्ध','ण्ठ','च्छ','च्छा',
-    'र्भ','ब्ध','ब्धे','र्थ','ग्ध','न्ध','र्थ्य','र्था'
-  ]);
-  const devanagariRegex = new RegExp(devanagariPatterns.join('|'), 'g');
-  text = text.replace(devanagariRegex, m => `<span class="mahapraana">${m}</span>`);
+  if (script === 'devanagari') {
+    const devanagariPatterns = sortByLengthDesc([
+      'ख','घ','छ','झ','ठ','ढ','थ','ध','फ','भ',
+      'स्थ','स्थि','स्फ','स्फु','द्भ','द्घ','द्ध','ण्ठ','च्छ','च्छा',
+      'र्भ','ब्ध','ब्धे','र्थ','ग्ध','न्ध','र्थ्य','र्था'
+    ]);
+    const re = new RegExp(devanagariPatterns.join('|'), 'g');
+    return text.replace(re, m => `<span class="mahapraana">${m}</span>`);
+  }
 
-  // ---------------- Malayalam ----------------
-  const malPatterns = sortByLengthDesc([
-    'ഖ','ഘ','ഛ','ഝ','ഠ','ഢ','ഥ','ധ','ഫ','ഭ',
-    'സ്ഥ','സ്ഥി','സ്ഫ','സ്ഫു','ദ്ഭ','ദ്ഘ','ദ്ധ','ണ്ഠ',
-    'ഛാ','ഛ്','സ്വഛ','ഛ്ച','ഛ്ത',
-    'ർഭ','ബ്ധ','ബ്ധെ','ർഥ','ഗ്ധ','ന്ധ','ര്‍ത്ഥ്യ','ര്‍ത്ഥാ'
-  ]);
-  const malRegex = new RegExp(malPatterns.join('|'), 'g');
-  text = text.replace(malRegex, m => `<span class="mahapraana">${m}</span>`);
+  if (script === 'malayalam') {
+    const malPatterns = sortByLengthDesc([
+      'ഖ','ഘ','ഛ','ഝ','ഠ','ഢ','ഥ','ധ','ഫ','ഭ',
+      'സ്ഥ','സ്ഥി','സ്ഫ','സ്ഫു','ദ്ഭ','ദ്ഘ','ദ്ധ','ണ്ഠ',
+      'ഛാ','ഛ്','സ്വഛ','ഛ്ച','ഛ്ത',
+      'ർഭ','ബ്ധ','ബ്ധെ','ർഥ','ഗ്ധ','ന്ധ','ര്‍ത്ഥ്യ','ര്ത്ഥാ'
+    ]);
+    const re = new RegExp(malPatterns.join('|'), 'g');
+    return text.replace(re, m => `<span class="mahapraana">${m}</span>`);
+  }
 
-  // ---------------- English transliteration ----------------
-  const engPatterns = sortByLengthDesc([
-    'kh','gh','chh','jh','ṭh','ḍh','th','dh','ph','bh',
-    'stha','sthi','sph','sphu','dbh','ddh','ṇṭh',
-    'cch','cchā','svacch','rbh','bdh','bdhe','rth','gdh','ndh','rthya','rthā'
-  ]);
-  const engRegex = new RegExp(engPatterns.join('|'), 'gi');
-  text = text.replace(engRegex, m => `<span class="mahapraana">${m}</span>`);
+  if (script === 'english') {
+    const engPatterns = sortByLengthDesc([
+      'kh','gh','chh','jh','ṭh','ḍh','th','dh','ph','bh',
+      'stha','sthi','sph','sphu','dbh','ddh','ṇṭh',
+      'cch','cchā','svacch','rbh','bdh','bdhe','rth','gdh','ndh','rthya','rthā'
+    ]);
+    const re = new RegExp(engPatterns.join('|'), 'gi');
+    return text.replace(re, m => `<span class="mahapraana">${m}</span>`);
+  }
 
-  // ---------------- Tamil ----------------
-  const tamilPatterns = sortByLengthDesc([
-    'க்ஷ','ஞ்ஞ','ச்ச','ஜ்ஜ','த்ர','த்வ','த்ஸ','ப்ர','ப்ள','ம்ர',
-    'ற்','ஸ்த','ஸ்வ','ஸ்ப' // common aspirates / clusters
-  ]);
-  const tamilRegex = new RegExp(tamilPatterns.join('|'), 'g');
-  text = text.replace(tamilRegex, m => `<span class="mahapraana">${m}</span>`);
+  if (script === 'tamil') {
+    const tamilPatterns = sortByLengthDesc([
+      // basic aspirates (mapped from Devanagari)
+      'க்ஹ','க்஘','ச்஛','ஜ்஝','ட்஠','ட்஢','த்஥','த்஧','ப்ஃ','ப்஭',
+      // frequent aspirated clusters
+      'ஸ்த','ஸ்தி','ஸ்ப','ஸ்பு','த்ப','த்஘','த்த','ண்஠','ச்ச','ச்சா',
+      'ர்ப','ப்த','ப்தே','ர்த','க்த','ந்த','ர்த்த்ய','ர்த்தா'
+    ]);
+    const re = new RegExp(tamilPatterns.join('|'), 'g');
+    return text.replace(re, m => `<span class="mahapraana">${m}</span>`);
+  }
 
   return text;
 }
+
 
 
             
