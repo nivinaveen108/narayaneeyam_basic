@@ -1016,6 +1016,8 @@ verseRaw = verseRaw || "";
 splitRaw = splitRaw || "";
 meaningRaw = meaningRaw || "";
 
+
+
   // ------------------------------------------------------------------
   // Apply highlighting ONLY to verse
   // ------------------------------------------------------------------
@@ -1025,7 +1027,31 @@ meaningRaw = meaningRaw || "";
       ? "english"
       : "malayalam";
 
-  const verseText = highlightMahapraana(String(verseRaw).normalize("NFC"), lang);
+function autoDetectScript(txt) {
+  txt = txt || "";
+
+  // contains Devanagari?
+  if (/[ऄ-९ॿ]/.test(txt)) return "devanagari";
+
+  // contains Malayalam?
+  if (/[ഀ-ൿ]/.test(txt)) return "malayalam";
+
+  // default English/translit
+  return "english";
+}
+
+
+// Auto-detect actual script in this cue
+const detectedLang = autoDetectScript(verseRaw);
+
+// Override UI-selected language ONLY if the text belongs to another script
+const langForHighlight = detectedLang;
+
+// Apply highlight
+const verseText = highlightMahapraana(
+  String(verseRaw).normalize("NFC"),
+  langForHighlight
+);
   const splitText = String(splitRaw).normalize("NFC");
 
   // ------------------------------------------------------------------
