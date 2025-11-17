@@ -883,18 +883,29 @@ body.light-theme .top-button:hover {
             }
             
 /*** Cue parsing ***/
-function parseCueText(c) {
+function parseCueText(text) {
+  if (!text) return emptyResult();
+
+  // Remove only "Translation failed" lines
+  const cleaned = text
+    .split(/\r?\n/)
+    .map(x => x.trim())
+    .filter(Boolean)
+    .filter(x => !x.includes("Translation failed"))
+    .join("\n");
+
   return {
-    verseDev: c.dev,
+    verseDev: cleaned,
     splitDev: "",
-    verseMalayalam: c.mal,
+    verseMalayalam: cleaned,
     splitMalayalam: "",
-    verseEnglish: c.eng,
+    verseEnglish: cleaned,
     splitEnglish: "",
-    meaning: c.mean
+    verseTrans: "",
+    splitTrans: "",
+    meaning: ""
   };
 }
-
 
 function emptyResult() {
   return {
@@ -912,22 +923,6 @@ function emptyResult() {
 
 
 
-async function loadTranslitCues(val) {
-  cuesDev = await loadVTT(`vtt_time_devanagari/Narayaneeyam_D${val}.vtt`);
-  cuesEng = await loadVTT(`vtt_time_english/Narayaneeyam_D${val}.vtt`);
-  cuesMal = await loadVTT(`vtt_time_malayalam/Narayaneeyam_D${val}.vtt`);
-  cuesMean = await loadVTT(`vtt_meaning/Narayaneeyam_D${val}.vtt`);
-
-  // assume all have same timing — so base on devanagari
-  cues = cuesDev.map((c, idx) => ({
-    start: c.start,
-    end: c.end,
-    dev: cuesDev[idx]?.text || "",
-    eng: cuesEng[idx]?.text || "",
-    mal: cuesMal[idx]?.text || "",
-    mean: cuesMean[idx]?.text || ""
-  }));
-}
 
 
 
@@ -1214,7 +1209,7 @@ const verseText = highlightMahapraana(
     });
 
     // load subtitles
-   await loadTranslitCues(val);
+    cues = await loadVTT(`vtt_time_devanagari_english/Narayaneeyam_D${val}.vtt`);
     currentCueIndex = -1;
     verseDiv.innerHTML = splitWordsDiv.innerHTML = meaningDiv.innerHTML = "";
 
