@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Interactive Nārāyaṇīyam Player — synchronized audio, verse display, and transliteration.">
+<meta name="theme-color" content="#0f0f10">
+
+<title>Nārāyaṇīyam Player — Go to & Transliteration</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Tiro+Devanagari+Hindi:wght@400;600&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" href="data:,">
+
+<style>
+:root{
+  /* base tokens (light fallback) */
+  --ui-font: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --deva-font: "Tiro Devanagari Hindi", "Noto Serif Devanagari", serif;
+
+  /* Apple-music-like accents (dark default uses pink/coral) */
+  --accent: #ff2d55;           /* bright pink accent */
+  --accent-soft: rgba(255,45,85,0.12);
+  --glass-strong: rgba(22,22,24,0.7);
+  --glass-soft: rgba(28,28,30,0.55);
+  --surface: rgba(18,18,20,0.7);
+  --muted: #9b9b9f;
+  --text-primary: #e9e9eb;
+  --text-secondary: #c7c7cb;
+  --shadow: rgba(0,0,0,0.6);
+  --page-bg: linear-gradient(180deg,#08080a 0%, #0e0e10 100%);
+  --glass-border: rgba(255,255,255,0.06);
+  --control-bg: rgba(255,255,255,0.03);
+  --is-dark: 1; /* 1 = dark mode, 0 = light mode */
+}
+
+/* Light theme overrides (applied when body has .light-theme) */
+body.light-theme {
+  --accent: #ff2d55;
+  --accent-soft: rgba(255,45,85,0.08);
+  --glass-strong: rgba(255,255,255,0.9);
+  --glass-soft: rgba(255,255,255,0.82);
+  --surface: rgba(255,255,255,0.85);
+  --muted: #55606a;
+  --text-primary: #0b0b0b;
+  --text-secondary: #3a3a3c;
+  --shadow: rgba(0,0,0,0.08);
+  --page-bg: linear-gradient(180deg,#fafafa 0%, #f4f4f6 100%);
+  --glass-border: rgba(0,0,0,0.06);
+  --control-bg: rgba(245,245,247,0.8);
+}
+
+/* smooth transitions */
+* { box-sizing: border-box; transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease, transform .12s ease; }
+
+html,body{ height:100%; margin:0; padding:0; }
+
+/* overall page */
+body{
+  font-family: var(--ui-font);
+  background: var(--page-bg);
+  color: var(--text-primary);
+  padding: 22px;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  -webkit-user-select:none;
+}
+
+/* heading */
+h1{
+  text-align:center;
+  margin:0 0 12px 0;
+  font-weight:600;
+  color:var(--text-primary);
+  letter-spacing:-0.4px;
+  font-size:1.25rem;
+}
+
+/* keep the same top config row layout — we only restyle visuals */
+#configRow{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin-bottom:14px;
+
+  /* Apple style glass */
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:14px;
+  padding:10px 14px;
+  box-shadow: 0 6px 22px var(--shadow);
+  border: 1px solid var(--glass-border);
+}
+
+/* style selector wrapper (unchanged layout) */
+#styleSelectorRow{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+  padding:6px 10px;
+  border-radius:10px;
+  background: transparent;
+}
+
+/* keep sizes & spacing of your controls exactly the same;
+   only adjust look: rounded, subtle inner glow + border */
+#speedBtn { min-width:70px; justify-content:space-evenly; }
+
+/* theme dots, fonts, size controls — preserve structure */
+.theme-dots{ display:flex; gap:8px; align-items:center; }
+.theme-dot[data-theme="pink"] { background-color: #ff2d55; }
+.theme-dot[data-theme="green"] { background-color: #32d74b; }
+.theme-dot[data-theme="orange"] { background-color: #ff9f0a; }
+.theme-dot[data-theme="blue"] { background-color: #0a84ff; }
+.theme-dot[data-theme="purple"] { background-color: #bf5af2; }
+.theme-dot[data-theme="brown"]   { background-color: #a0522d; } /* Sienna */
+.theme-dot[data-theme="teal"]    { background-color: #008080; }
+.theme-dot[data-theme="charcoal"]{ background-color: #333333; }
+.theme-dot[data-theme="maroon"]  { background-color: #800000; }
+.theme-dot[data-theme="custom"]  { background-color: #ffcc00; } /* or any custom color */
+
+.theme-dot:hover { transform: scale(1.08); filter: brightness(1.08); }
+.theme-dot:hover{ transform:scale(1.08); filter:brightness(1.08); }
+
+/* font swatches */
+.font-options { display:flex; gap:8px; }
+.font-swatch{
+  width:34px; height:34px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-weight:700; font-size:.9rem;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45) inset;
+}
+.font-swatch.active{ outline: 2px solid rgba(255,255,255,0.06); box-shadow: 0 6px 22px rgba(0,0,0,0.65) inset; }
+
+/* font size controls */
+.font-size-controls { display:flex; align-items:center; gap:6px; }
+.font-size-controls button{
+  border-radius:8px; padding:4px 10px; font-weight:700;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: transparent; color:var(--text-primary);
+}
+
+/* audio control panel - keep same size and layout, change visual */
+#audioControls{
+  max-width:1100px;
+  margin:0 auto 8px;
+  display:flex; flex-direction:column; gap:8px;
+  padding:12px;
+  border-radius:14px;
+  /* glass surface */
+  background: linear-gradient(180deg, var(--surface), rgba(255,255,255,0.02));
+  border:1px solid var(--glass-border);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.55);
+}
+
+/* control rows - identical layout */
+.control-row{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; }
+
+/* time-row keep exact layout and sizes */
+.time-row{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; width:100%;
+  border-top:1px solid rgba(255,255,255,0.04);
+  padding-top:10px;
+}
+.time-left, .time-right{ display:flex; align-items:center; gap:8px; }
+
+/* Buttons - preserve sizes but restyle visuals */
+button{
+  cursor:pointer;
+  font-weight:600;
+  border-radius:12px;
+  padding:8px 12px;
+  min-height:40px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-primary);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.5) inset;
+}
+
+/* icon buttons */
+button.icon-btn{ width:54px; height:44px; padding:0; display:flex; align-items:center; justify-content:center; font-size:1.05rem; }
+
+/* active state: dark pill with accent glow for Apple-like feel */
+button.active{
+  background: linear-gradient(180deg, rgba(0,0,0,0.75), rgba(0,0,0,0.6));
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 6px 28px rgba(0,0,0,0.65), 0 0 18px rgba(255,45,85,0.18);
+}
+
+/* hover */
+button:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.6), 0 0 12px rgba(255,45,85,0.06);
+}
+
+/* focus visible */
+button:focus-visible{
+  outline: 3px solid rgba(255,45,85,0.18);
+  outline-offset:2px;
+}
+
+/* goto panel keep dimensions and layout same — visuals changed */
+#gotoWrapper{ position:relative; display:flex; align-items:center; }
+#gotoToggle{ background:transparent; border:none; color:var(--text-primary); font-weight:700; padding:6px 8px; cursor:pointer; }
+#gotoPanel{
+  position:absolute; right:0; top:34px; width:520px; max-width:calc(100vw - 44px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:10px; padding:10px; display:none; z-index:60;
+  border:1px solid var(--glass-border);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+}
+.group-grid{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+.group-select{
+  border-radius:8px; padding:8px 12px; font-weight:700; min-width:120px; text-align:center;
+  cursor:pointer; border:1px solid rgba(255,255,255,0.03);
+  background:transparent;
+}
+.group-select:hover{ background: var(--accent-soft); box-shadow: 0 8px 18px rgba(0,0,0,0.6) inset; }
+
+/* time info text (unchanged layout) */
+#timeDisplay, #currentInfo{ font-family:var(--ui-font); color:var(--text-secondary); font-weight:700; font-size:.92rem; }
+
+/* SUBTITLE CONTAINER - IMPORTANT: DO NOT CHANGE SIZE/STRUCTURE */
+/* exactly preserve max-width, margin, padding, border, border-radius, etc.  */
+#subtitleContainer{
+  max-width: 1100px;
+  margin: 12px auto 0;
+  padding: 22px;
+  border: 3px dashed var(--glass-border);         /* originally var(--primary-dark) — restyled to glass-border */
+  border-radius: 12px;
+  background: rgba(255,255,255,0.02);              /* subtle dark glass */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.65);
+  text-align: center;
+  line-height: 1.9;
+}
+
+/* Inside content... keep fonts & sizes exactly as before */
+#verse, #splitWords{ font-family: var(--deva-font); letter-spacing:.02em; text-align:center; }
+#verse{
+  font-size: calc(clamp(1.8rem, 3vw, 2.4rem) * var(--font-scale));
+  font-weight:700;
+  color: var(--text-primary);
+  margin-bottom:14px;
+}
+#splitWords{
+  font-size: calc(var(--verse-size) * 0.7 * var(--font-scale));
+  font-style: italic;
+  color: var(--accent);
+  margin-bottom:12px;
+}
+#meaning{
+  font-family:var(--ui-font);
+  font-size:1.12rem;
+  color:var(--text-secondary);
+  max-width:960px;
+  margin:0 auto;
+  text-align:justify;
+  line-height:1.8;
+  background: rgba(255,255,255,0.01);
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.02);
+}
+
+/* audio element styling unchanged layout */
+audio{ display:block; margin:10px auto 0; width:100%; max-width:1100px; accent-color:var(--accent); }
+
+/* small theme-toggle button placed unobtrusively (keeps configRow layout) */
+#themeModeToggle{
+  border-radius:999px; padding:6px 10px; font-weight:600; min-height:36px;
+  background: transparent; border:1px solid rgba(255,255,255,0.04);
+  color:var(--text-primary);
+  display:flex; align-items:center; gap:8px;
+}
+
+/* tiny pill indicator for accent */
+.accent-pill{
+  width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 6px 14px rgba(255,45,85,0.22);
+}
+
+/* hide scrollbar (kept) */
+::-webkit-scrollbar{ display:none; }
+
+/* responsive - keep same breakpoints and sizes */
+@media (max-width:820px){
+  #verse{ font-size:1.8rem; }
+  #splitWords{ font-size:1.1rem; }
+  #meaning{ font-size:1rem; }
+  .group-select{ min-width:100px; font-size:.95rem; padding:7px 10px; }
+  #gotoPanel{ width: calc(100vw - 32px); left:8px; right:8px; top:44px; }
+}
+</style>
+</head>
+
+<body>
+  <main>
+    <h1>Nārāyaṇīyam Player</h1>
+
+    <!-- top config row - same layout; theme toggle added unobtrusively -->
+    <div id="configRow">
+      <div id="styleSelectorRow">
+        <!-- Theme dots preserved -->
+       <div id="themeDots" class="theme-dots" aria-hidden="true">
+  <button class="theme-dot" data-theme="dark" aria-label="Dark theme"></button>
+  <button class="theme-dot" data-theme="light" aria-label="Light theme"></button>
+  <button class="theme-dot" data-theme="pink" aria-label="Pink theme"></button>
+  <button class="theme-dot" data-theme="purple" aria-label="Purple theme"></button>
+  <button class="theme-dot" data-theme="blue" aria-label="Blue theme"></button>
+  <button class="theme-dot" data-theme="orange" aria-label="Orange theme"></button>
+</div>
+
+
+        <div class="config-divider" aria-hidden="true" style="width:1px;height:26px;background:transparent;"></div>
+
+        <div id="fontSizeControls" class="font-size-controls" aria-label="Font size controls">
+          <button id="fontSmaller" title="Decrease font size">A−</button>
+          <button id="fontLarger" title="Increase font size">A+</button>
+        </div>
+
+        <!-- UI font swatches -->
+        <div id="uiFontOptions" class="font-options" aria-label="UI font options">
+          <div class="font-swatch" data-font='"Poppins", "Segoe UI", sans-serif' style="font-family:'Poppins',sans-serif;">Po</div>
+          <div class="font-swatch" data-font='"Roboto", "Segoe UI", sans-serif' style="font-family:'Roboto',sans-serif;">Ro</div>
+          <div class="font-swatch" data-font='"Merriweather", serif' style="font-family:'Merriweather',serif;">Me</div>
+        </div>
+
+        <!-- Devanagari font swatches -->
+        <div id="devaFontOptions" class="font-options" aria-label="Devanagari font options">
+          <div class="font-swatch" data-font='"Tiro Devanagari Hindi", serif' style="font-family:'Tiro Devanagari Hindi',serif;">ति</div>
+          <div class="font-swatch" data-font='"Noto Serif Devanagari", serif' style="font-family:'Noto Serif Devanagari',serif;">नो</div>
+          <div class="font-swatch" data-font='"Mukta Vaani", sans-serif' style="font-family:'Mukta Vaani',sans-serif;">मु</div>
+        </div>
+
+        <!-- Theme mode toggle (dark/light) - placed in same row, unobtrusive -->
+        <button id="themeModeToggle" title="Toggle Light / Dark theme" aria-pressed="false" style="margin-left:8px;">
+          <span class="accent-pill" aria-hidden="true"></span>
+          <span id="themeModeLabel" style="font-size:.92rem;">Dark</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- audio controls - layout completely preserved -->
+    <div id="audioControls" aria-label="Audio controls">
+
+      <!-- Main controls row -->
+      <div class="control-row">
+        <button id="prevDashakamBtn" class="btn-with-label" aria-label="Previous Dashakam">
+          <i class="fas fa-step-backward"></i>
+          <span class="btn-label-small">Dashakam</span>
+        </button>
+
+        <button id="prevVerseBtn" class="btn-with-label" aria-label="Previous Verse">
+          <i class="fas fa-backward"></i>
+          <span class="btn-label-small">Verse</span>
+        </button>
+
+        <button id="playPauseBtn" class="icon-btn" aria-label="Play or Pause">
+          <i class="fas fa-play"></i>
+        </button>
+
+        <button id="muteBtn" class="icon-btn" title="Mute" aria-label="Mute or Unmute">
+          <i class="fas fa-volume-up"></i>
+        </button>
+
+        <button id="speedBtn" class="icon-btn" title="Change Speed" aria-label="Change Playback Speed">
+          <i class="fas fa-tachometer-alt"></i>
+        </button>
+
+        <button id="repeatVerseBtn" class="icon-btn" title="Repeat Verse" aria-label="Repeat Verse">
+          <i class="fas fa-redo"></i>
+        </button>
+
+        <button id="repeatDashakamBtn" class="icon-btn" title="Repeat Dashakam" aria-label="Repeat Dashakam">
+          <i class="fas fa-infinity"></i>
+        </button>
+
+        <button id="nextVerseBtn" class="btn-with-label" aria-label="Next Verse">
+          <span class="btn-label-small">Verse</span>
+          <i class="fas fa-forward"></i>
+        </button>
+
+        <button id="nextDashakamBtn" class="btn-with-label" aria-label="Next Dashakam">
+          <span class="btn-label-small">Dashakam</span>
+          <i class="fas fa-step-forward"></i>
+        </button>
+      </div>
+
+      <!-- Time + transliteration toggle + Go to -->
+      <div class="time-row">
+        <div class="time-left">
+          <button id="translitToggle">English Transliteration</button>
+          <div id="currentInfo">Dashakam — Verse —</div>
+          <div id="timeDisplay">Elapsed: 00:00 | Remaining: 00:00 | Total Elapsed: 00:00 | Total Remaining: 00:00</div>
+        </div>
+
+        <div class="time-right">
+          <div id="gotoWrapper">
+            <button id="gotoToggle">Go to ▾</button>
+            <div id="gotoPanel" aria-hidden="true">
+              <div class="group-grid" id="groupGrid"><!-- groups injected here --></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- native audio element -->
+    <audio id="audio" preload="auto"></audio>
+
+    <!-- subtitles (IMPORTANT: container's sizing & padding kept EXACTLY as original) -->
+    <div id="subtitleContainer">
+      <div id="verse"></div>
+      <div id="splitWords"></div>
+      <div id="meaning"></div>
+    </div>
+
+    <!-- full original script preserved with small additions for theme toggling only.
+         All original IDs, event handlers and behavior are kept intact. -->
+<script>
+/* ===========================
+   Original app script (kept functionally the same)
+   plus theme-mode toggle handling at the end.
+   =========================== */
+document.addEventListener('DOMContentLoaded', () => {
+  /*** DOM references ***/
+  const audio = document.getElementById('audio');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+  const prevDashakamBtn = document.getElementById('prevDashakamBtn');
+  const nextDashakamBtn = document.getElementById('nextDashakamBtn');
+  const prevVerseBtn = document.getElementById('prevVerseBtn');
+  const nextVerseBtn = document.getElementById('nextVerseBtn');
+  const repeatVerseBtn = document.getElementById('repeatVerseBtn');
+  const repeatDashakamBtn = document.getElementById('repeatDashakamBtn');
+  const speedBtn = document.getElementById('speedBtn');
+  const muteBtn = document.getElementById('muteBtn');
+  const timeDisplay = document.getElementById('timeDisplay');
+  const verseDiv = document.getElementById('verse');
+  const splitWordsDiv = document.getElementById('splitWords');
+  const meaningDiv = document.getElementById('meaning');
+  const gotoToggle = document.getElementById('gotoToggle');
+  const gotoPanel = document.getElementById('gotoPanel');
+  const groupGrid = document.getElementById('groupGrid');
+  const themeDots = document.getElementById('themeDots');
+  const translitToggle = document.getElementById('translitToggle');
+// ------------------------------
+//  Text elements that need dynamic color updates
+// ------------------------------
+const textElements = [
+  verseDiv,
+  splitWordsDiv,
+  meaningDiv,
+  timeDisplay,
+  playPauseBtn,
+  prevVerseBtn,
+  nextVerseBtn,
+  prevDashakamBtn,
+  nextDashakamBtn,
+  repeatVerseBtn,
+  repeatDashakamBtn,
+  speedBtn,
+  muteBtn,
+  gotoToggle,
+  ...document.querySelectorAll('.group-select')
+];
+
+  /*** State ***/
+  const totalDashakams = 100;
+  const estimatedDashakamDuration = 300;
+  let cues = [];
+  let currentCueIndex = -1;
+  let currentDashakam = 1;
+  let showTranslit = false;
+  let speedOptions = [1, 1.25, 1.5, 2];
+  let speedIndex = 0;
+  let speedTimeout = null;
+
+  // seek state flags
+  let isSeeking = false;
+  let lastSeekTarget = 0;
+
+  /*** Helpers ***/
+  const nl2br = s => (s ? s.replace(/\n/g, '<br>') : '');
+  const isAscii = s => /^[\x00-\x7F\s.,'"()\-:;!?—–…0-9]+$/.test(s);
+
+  const DEBUG = false;
+  const trace = (msg, data = {}) => { if (DEBUG) console.log(`[TRACE] ${msg}`, data); };
+
+  // restore repeat settings from localStorage (if any)
+  let repeatVerse = localStorage.getItem('repeatVerse') === 'true';
+  let repeatDashakam = localStorage.getItem('repeatDashakam') === 'true';
+  repeatVerseBtn.classList.toggle('active', repeatVerse);
+  repeatDashakamBtn.classList.toggle('active', repeatDashakam);
+
+  function timeToSeconds(t) {
+    if (!t) return 0;
+    const p = t.split(':').map(Number);
+    if (p.length === 3) return p[0] * 3600 + p[1] * 60 + p[2];
+    if (p.length === 2) return p[0] * 60 + p[1];
+    return p[0] || 0;
+  }
+
+  // display current Dashakam/verse (if a UI element exists)
+  function updateCurrentInfo() {
+    const infoEl = document.getElementById("currentInfo");
+    if (!infoEl) return;
+    const verseNum = (currentCueIndex === -1) ? '-' : (currentCueIndex + 1);
+    infoEl.textContent = `Dashakam ${String(currentDashakam).padStart(3,'0')} — Verse ${verseNum}`;
+  }
+
+  /*** Cue parsing ***/
+  function parseCueText(text) {
+    const lines = (text||'').trim().split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const verseEndRegex = /॥\s*[०-९0-9]+\s*॥/;
+    let verseLines = [], splitLines = [], asciiLines = [];
+    let foundVerseEnd = false, foundMeaningStart = false;
+    for (const line of lines) {
+      if (!foundVerseEnd) {
+        verseLines.push(line);
+        if (verseEndRegex.test(line)) foundVerseEnd = true;
+      } else if (!foundMeaningStart) {
+        if (isAscii(line)) { foundMeaningStart = true; asciiLines.push(line); }
+        else splitLines.push(line);
+      } else {
+        asciiLines.push(line);
+      }
+    }
+    const verseDev = verseLines.join('\n');
+    const splitDev = splitLines.join('\n');
+    const verseTrans = asciiLines.join('\n') || verseDev;
+    const splitTrans = asciiLines.join('\n') || splitDev;
+    const meaning = asciiLines.join('\n') || '';
+    return { verseDev, splitDev, verseTrans, splitTrans, meaning };
+  }
+
+  /*** VTT loader ***/
+  async function loadVTT(url) {
+    try {
+      const txt = await fetch(url).then(r => (r.ok ? r.text() : ''));
+      if (!txt) {
+        console.warn('⚠️ Empty or missing VTT:', url);
+        return [];
+      }
+      const lines = txt.split(/\r?\n/);
+      const out = [];
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes('-->')) {
+          const [start, end] = lines[i].split('-->');
+          const textLines = [];
+          i++;
+          while (i < lines.length && lines[i].trim() !== '') {
+            textLines.push(lines[i]);
+            i++;
+          }
+          out.push({
+            start: (start || '').trim(),
+            end: (end || '').trim(),
+            text: textLines.join('\n')
+          });
+        }
+      }
+      console.log(`✅ Loaded ${out.length} cues from ${url}`);
+      return out;
+    } catch (e) {
+      console.error('❌ loadVTT failed:', e);
+      return [];
+    }
+  }
+
+  /*** Subtitle update (UI only) ***/
+  function updateSubtitle(index) {
+  if (!cues || index < 0 || index >= cues.length) return;
+  currentCueIndex = index;
+  const parsed = parseCueText(cues[index].text);
+  verseDiv.innerHTML = nl2br(showTranslit ? parsed.verseTrans : parsed.verseDev);
+  splitWordsDiv.innerHTML = nl2br(showTranslit ? parsed.splitTrans : parsed.splitDev);
+  meaningDiv.innerHTML = nl2br(parsed.meaning || '');
+}
+
+
+  /*** Minimal group grid + highlight (to avoid undefined errors) ***/
+  function buildGroupGrid() {
+    if (!groupGrid) return;
+    groupGrid.innerHTML = '';
+    for (let g = 0; g < 10; g++) {
+      const start = g * 10 + 1, end = start + 9;
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex';
+      wrapper.style.flexDirection = 'column';
+      wrapper.style.gap = '6px';
+      wrapper.style.alignItems = 'center';
+      const title = document.createElement('div');
+      title.textContent = `${start}–${end}`;
+      title.style.fontWeight = '700';
+      wrapper.appendChild(title);
+      const mini = document.createElement('div');
+      mini.style.display = 'flex';
+      mini.style.flexWrap = 'wrap';
+      mini.style.gap = '6px';
+      mini.style.justifyContent = 'center';
+      for (let i = start; i <= end; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'group-select';
+        btn.textContent = i;
+        btn.dataset.val = i.toString().padStart(3, '0');
+        btn.addEventListener('click', ev => {
+          loadDashakam(ev.currentTarget.dataset.val);
+          openGoto(false);
+        });
+        mini.appendChild(btn);
+      }
+      wrapper.appendChild(mini);
+      groupGrid.appendChild(wrapper);
+    }
+  }
+  function highlightGoTo() {
+    if (!groupGrid) return;
+    groupGrid.querySelectorAll('.group-select').forEach(b => (b.style.background = 'transparent'));
+    const sel = groupGrid.querySelector(`.group-select[data-val="${String(currentDashakam).padStart(3,'0')}"]`);
+    if (sel) sel.style.background = getComputedStyle(document.documentElement).getPropertyValue('--accent-soft') || '#a4d4a6';
+  }
+
+  /*** Load Dashakam (clean version) ***/
+  async function loadDashakam(val, autoPlay = false) {
+    console.log("🔄 Loading Dashakam:", val);
+
+    currentDashakam = parseInt(val, 10);
+    audio.pause();
+    audio.src = `audio/Narayaneeyam_D${val}.mp3`;
+    audio.preload = "auto";
+    audio.load();
+
+    // wait for metadata
+    await new Promise(resolve => {
+      const onMeta = () => {
+        audio.removeEventListener('loadedmetadata', onMeta);
+        resolve();
+      };
+      audio.addEventListener('loadedmetadata', onMeta);
+      setTimeout(resolve, 2000);
+    });
+
+    // load subtitles
+    cues = await loadVTT(`vtt_fixed_output/Narayaneeyam_D${val}.vtt`);
+    currentCueIndex = -1;
+    verseDiv.innerHTML = splitWordsDiv.innerHTML = meaningDiv.innerHTML = "";
+
+    if (cues.length > 0) {
+      updateSubtitle(0);
+      updateCurrentInfo();
+    }
+
+    highlightGoTo();
+    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+
+    if (autoPlay) {
+      try {
+        await audio.play();
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+      } catch (e) {
+        console.warn("Autoplay failed:", e);
+      }
+    }
+
+    console.log(`✅ Dashakam ${val} ready with ${cues.length} verses`);
+  }
+
+  /*** Jump to cue — robust seek with retries and clear timeupdate suppression ***/
+  async function jumpToCue(index, keepPlaying = true) {
+    if (!cues || !cues[index]) return;
+    const cue = cues[index];
+    const target = timeToSeconds(cue.start);
+    console.log('jumpToCue: moving to cue', index, 'time=', target.toFixed(3));
+
+    isSeeking = true;
+    lastSeekTarget = target;
+
+    // ensure metadata/canplay
+    if (audio.readyState < 1) {
+      await new Promise(resolve => {
+        audio.addEventListener('loadedmetadata', () => resolve(), { once: true });
+        // small timeout fallback
+        setTimeout(() => resolve(), 800);
+      });
+    }
+
+    const maxAttempts = 5;
+    let attempt = 0;
+    let success = false;
+
+    while (attempt < maxAttempts && !success) {
+      attempt++;
+      // perform seek
+      try {
+        audio.currentTime = target;
+      } catch (e) {
+        // some browsers may throw if not ready; ignore and continue
+        console.warn('jumpToCue: set currentTime error', e);
+      }
+
+      // wait for seeked event (or timeout)
+      await new Promise(resolve => {
+        let resolved = false;
+        const onSeeked = () => {
+          if (resolved) return;
+          resolved = true;
+          audio.removeEventListener('seeked', onSeeked);
+          resolve();
+        };
+        audio.addEventListener('seeked', onSeeked, { once: true });
+        // fallback timeout if seeked doesn't fire quickly
+        setTimeout(() => {
+          if (!resolved) {
+            resolved = true;
+            audio.removeEventListener('seeked', onSeeked);
+            resolve();
+          }
+        }, 400);
+      });
+
+      // check how close we are to target
+      const diff = Math.abs(audio.currentTime - target);
+      console.log(`jumpToCue: attempt #${attempt} currentTime=${audio.currentTime.toFixed(3)} diff=${diff.toFixed(3)}`);
+      if (diff <= 0.35) {
+        success = true;
+        break;
+      } else {
+        // small delay before retrying
+        await new Promise(r => setTimeout(r, 120));
+      }
+    }
+
+    // finalize UI state regardless of absolute success
+    currentCueIndex = index;
+    const parts = parseCueText(cue.text);
+    verseDiv.innerHTML = nl2br(showTranslit ? parts.verseTrans : parts.verseDev);
+    splitWordsDiv.innerHTML = nl2br(showTranslit ? parts.splitTrans : parts.splitDev);
+    meaningDiv.innerHTML = nl2br(parts.meaning || '');
+    updateCurrentInfo();
+
+    // resume play if requested
+    if (keepPlaying) {
+      try {
+        await audio.play();
+      } catch (e) {
+        console.warn('jumpToCue: play failed after seek', e);
+      }
+    }
+
+    // allow timeupdate to resume mapping cues
+    setTimeout(() => {
+      isSeeking = false;
+      // set lastSeekTarget a small delay so timeupdate ignores tiny immediate jumps
+      setTimeout(() => { lastSeekTarget = 0; }, 300);
+    }, 250);
+
+    console.log('jumpToCue: finished (success=' + success + ') currentTime=' + audio.currentTime.toFixed(3));
+  }
+
+  /*** Cue index helper (map time to cue) ***/
+  function getCueIndexAtTime(nowSec = audio.currentTime) {
+    if (!cues || cues.length === 0) return -1;
+    for (let i = 0; i < cues.length; i++) {
+      const s = timeToSeconds(cues[i].start);
+      const e = timeToSeconds(cues[i].end);
+      if (nowSec >= s && nowSec < e) return i;
+    }
+    const idx = cues.findIndex(c => timeToSeconds(c.start) > nowSec);
+    return idx > 0 ? idx - 1 : 0;
+  }
+
+  /*** SINGLE Timeupdate Handler (fixed repeat + next dashakam) ***/
+  audio.addEventListener("timeupdate", async () => {
+    if (!cues || isSeeking) return;
+    const now = audio.currentTime;
+
+    // Repeat verse handling
+    if (repeatVerse && currentCueIndex >= 0 && currentCueIndex < cues.length) {
+      const cue = cues[currentCueIndex];
+      const cueStart = timeToSeconds(cue.start);
+      const cueEnd = timeToSeconds(cue.end);
+      if (now >= cueEnd - 0.15) {
+        console.log(`🔁 Repeating verse ${currentCueIndex + 1}`);
+        audio.currentTime = cueStart;
+        return;
+      }
+    }
+
+    // Normal cue switching
+    const idx = getCueIndexAtTime(now);
+    if (idx !== currentCueIndex) {
+      currentCueIndex = idx;
+      updateSubtitle(idx);
+      updateCurrentInfo();
+    }
+
+    // End of dashakam → load next
+    if (
+      cues.length > 0 &&
+      currentCueIndex === cues.length - 1 &&
+      now >= timeToSeconds(cues[cues.length - 1].end) - 0.25
+    ) {
+      if (repeatDashakam) {
+        console.log("🔁 Repeating Dashakam");
+        await jumpToCue(0, true);
+        return;
+      }
+      if (currentDashakam < totalDashakams) {
+        const nextD = String(currentDashakam + 1).padStart(3, '0');
+        console.log(`➡️ Moving to next Dashakam ${nextD}`);
+        await loadDashakam(nextD, true);
+        if (cues.length > 0) await jumpToCue(0, true);
+      } else {
+        console.log("🛑 End of final Dashakam");
+        audio.pause();
+      }
+    }
+  });
+
+  /*** Prev / Next Verse handlers ***/
+  prevVerseBtn.addEventListener('click', async () => {
+    if (!cues || cues.length === 0) return;
+    let idx = currentCueIndex !== -1 ? currentCueIndex : getCueIndexAtTime();
+    console.log(`prevVerse clicked, currentCueIndex=${currentCueIndex}, computedIdx=${idx}`);
+    if (idx > 0) {
+      await jumpToCue(idx - 1);
+      return;
+    }
+    if (currentDashakam > 1) {
+      const prevD = String(currentDashakam - 1).padStart(3, '0');
+      const wasPlaying = !audio.paused && !audio.ended;
+      await loadDashakam(prevD, wasPlaying);
+      if (cues.length > 0) await jumpToCue(cues.length - 1, wasPlaying);
+    } else if (repeatDashakam && cues.length > 0) {
+      await jumpToCue(cues.length - 1);
+    }
+  });
+
+  nextVerseBtn.addEventListener('click', async () => {
+    trace('nextVerseBtn.click', { currentCueIndex, audioTime: audio.currentTime.toFixed(3) });
+
+    if (!cues || cues.length === 0) return;
+
+    let idx = currentCueIndex !== -1 ? currentCueIndex : getCueIndexAtTime();
+    console.log(`➡️ nextVerse clicked, currentCueIndex=${currentCueIndex}, computedIdx=${idx}`);
+
+    if (idx < cues.length - 1) {
+      // ensure can seek quickly
+      if (audio.readyState < 2) {
+        await new Promise(resolve => {
+          const onCan = () => { audio.removeEventListener('canplay', onCan); resolve(); };
+          audio.addEventListener('canplay', onCan);
+          setTimeout(resolve, 700); // fallback
+        });
+      }
+
+      // small delay and then jump
+      console.log(`⏭️ nextVerse: moving to next cue ${idx + 1}`);
+      setTimeout(() => jumpToCue(idx + 1, true), 150);
+      return;
+    }
+
+    // move to next dashakam
+    if (currentDashakam < totalDashakams) {
+      const nextD = String(currentDashakam + 1).padStart(3, '0');
+      const wasPlaying = !audio.paused && !audio.ended;
+      console.log(`➡️ nextVerse: end of dashakam ${currentDashakam}, loading ${nextD}`);
+      await loadDashakam(nextD, wasPlaying);
+
+      if (cues.length > 0) {
+        setTimeout(() => jumpToCue(0, wasPlaying), 250);
+      }
+    } else if (repeatDashakam && cues.length > 0) {
+      console.log(`🔁 Repeating Dashakam`);
+      jumpToCue(0);
+    }
+  });
+
+  /*** Prev/Next Dashakam UI buttons ***/
+  prevDashakamBtn.addEventListener('click', () => {
+    if (currentDashakam > 1) loadDashakam(String(currentDashakam - 1).padStart(3, '0'));
+  });
+  nextDashakamBtn.addEventListener('click', () => {
+    if (currentDashakam < totalDashakams) loadDashakam(String(currentDashakam + 1).padStart(3, '0'));
+  });
+
+  /*** Repeat toggles (mutually exclusive, with save + visual feedback) ***/
+  repeatVerseBtn.addEventListener('click', () => {
+    repeatVerse = !repeatVerse;
+    if (repeatVerse) {
+      repeatDashakam = false; // disable dashakam repeat if verse repeat is active
+    }
+
+    repeatVerseBtn.classList.toggle('active', repeatVerse);
+    repeatDashakamBtn.classList.toggle('active', repeatDashakam);
+
+    // optional: save preference
+    localStorage.setItem('repeatVerse', repeatVerse);
+    localStorage.setItem('repeatDashakam', repeatDashakam);
+
+    console.log(`🔁 Repeat Verse: ${repeatVerse}`);
+  });
+
+  repeatDashakamBtn.addEventListener('click', () => {
+    repeatDashakam = !repeatDashakam;
+    if (repeatDashakam) {
+      repeatVerse = false; // disable verse repeat if dashakam repeat is active
+    }
+
+    repeatVerseBtn.classList.toggle('active', repeatVerse);
+    repeatDashakamBtn.classList.toggle('active', repeatDashakam);
+
+    // optional: save preference
+    localStorage.setItem('repeatVerse', repeatVerse);
+    localStorage.setItem('repeatDashakam', repeatDashakam);
+
+    console.log(`♾️ Repeat Dashakam: ${repeatDashakam}`);
+  });
+
+  /*** Play/pause icon management (also handled by audio events) ***/
+  playPauseBtn.addEventListener('click', () => {
+    if (audio.paused) audio.play().catch(()=>{});
+    else audio.pause();
+  });
+  audio.addEventListener('play', () => playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>');
+  audio.addEventListener('pause', () => playPauseBtn.innerHTML = '<i class="fas fa-play"></i>');
+
+  /*** Speed / Mute ***/
+  speedBtn.addEventListener('click', () => {
+    speedIndex = (speedIndex + 1) % speedOptions.length;
+    audio.playbackRate = speedOptions[speedIndex];
+    const label = speedOptions[speedIndex] + '×';
+    speedBtn.textContent = label;
+    clearTimeout(speedTimeout);
+    speedTimeout = setTimeout(() => { speedBtn.innerHTML = '<i class="fas fa-tachometer-alt"></i>'; }, 900);
+  });
+
+  muteBtn.addEventListener('click', () => {
+    audio.muted = !audio.muted;
+    muteBtn.innerHTML = audio.muted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+  });
+
+  document.addEventListener('click', (e) => {
+    const panel = document.getElementById('gotoPanel');
+    const toggle = document.getElementById('gotoToggle');
+    if (!panel || !toggle) return;
+    if (!panel.contains(e.target) && !toggle.contains(e.target)) {
+      panel.style.display = 'none';
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  /*** Time formatting / display (periodic refresh) ***/
+  function formatTime(s) {
+    if (!s || isNaN(s)) return '00:00';
+    const m = Math.floor(s/60).toString().padStart(2,'0');
+    const sec = Math.floor(s%60).toString().padStart(2,'0');
+    return `${m}:${sec}`;
+  }
+
+  function updateTimeDisplay() {
+    const elapsed = audio.currentTime || 0;
+    const duration = (audio.duration && !isNaN(audio.duration)) ? audio.duration : estimatedDashakamDuration;
+    const remaining = Math.max(0, duration - elapsed);
+    timeDisplay.textContent = `Elapsed: ${formatTime(elapsed)} | Remaining: ${formatTime(remaining)}`;
+  }
+  setInterval(updateTimeDisplay, 1000);
+  audio.addEventListener('timeupdate', updateTimeDisplay);
+
+  /*** Go-to toggle simple handlers ***/
+  let gotoOpen = false;
+  function openGoto(open) { gotoOpen = open; if (gotoPanel) gotoPanel.style.display = open ? 'block' : 'none'; if (gotoToggle) gotoToggle.textContent = open ? 'Go to ▴' : 'Go to ▾'; }
+  if (gotoToggle) { gotoToggle.addEventListener('click', () => openGoto(!gotoOpen)); }
+
+ // Only declare translitState once
+let translitState = 'english';
+let showTranslit1 = true; // assign, do not redeclare elsewhere
+
+async function loadTranslitCues(dashNum = null) {
+    dashNum = dashNum || String(currentDashakam).padStart(3, '0');
+    let vttFolder = 'vtt_transliterated';
+    if (translitState === 'english') vttFolder = 'vtt_transliterated';
+    else if (translitState === 'devanagari') vttFolder = 'vtt_fixed_output';
+    else if (translitState === 'malayalam') vttFolder = 'vtt_malayalam';
+
+    cues = await loadVTT(`${vttFolder}/Narayaneeyam_D${dashNum}.vtt`);
+
+    showTranslit1 = translitState === 'english' || translitState === 'malayalam';
+
+    const idx = currentCueIndex >= 0 ? currentCueIndex : 0;
+    if (cues.length > 0) updateSubtitle(idx);
+}
+
+// Initial load
+loadTranslitCues();
+
+// Button toggle
+if (translitToggle) {
+    translitToggle.addEventListener('click', async () => {
+        translitState = translitState === 'english' ? 'devanagari' :
+                        translitState === 'devanagari' ? 'malayalam' : 'english';
+
+        translitToggle.textContent = translitState === 'english' ? 'English Transliteration' :
+                                     translitState === 'devanagari' ? 'Devanagari' : 'Malayalam';
+
+        await loadTranslitCues();
+    });
+}
+
+
+  /*** Audio ended handling: auto-next dashakam ***/
+  audio.addEventListener('ended', async () => {
+    console.log('🎵 audio ended event, currentCueIndex=', currentCueIndex);
+
+    // Case 1️⃣ — Repeat current verse if active
+    if (repeatVerse && cues && currentCueIndex !== -1 && currentCueIndex < cues.length) {
+      console.log('🔁 Repeating same verse', currentCueIndex);
+      await jumpToCue(currentCueIndex, true);
+      return;
+    }
+
+    // Case 2️⃣ — Normal advance to next verse
+    if (cues && currentCueIndex < cues.length - 1) {
+      console.log('➡️ Auto advancing to next verse');
+      await jumpToCue(currentCueIndex + 1, true);
+      return;
+    }
+
+    // Case 3️⃣ — Reached end of dashakam
+    if (cues && currentCueIndex >= cues.length - 1) {
+      if (repeatDashakam && cues.length > 0) {
+        console.log('🔁 Repeating entire dashakam');
+        await jumpToCue(0, true);
+        return;
+      }
+
+      // Move to next dashakam if available
+      if (currentDashakam < totalDashakams) {
+        const nextD = String(currentDashakam + 1).padStart(3, '0');
+        console.log(`➡️ End of dashakam ${currentDashakam}, loading next ${nextD}`);
+        await loadDashakam(nextD, true);
+        if (cues.length > 0) await jumpToCue(0, true);
+        return;
+      }
+
+      // Otherwise stop playback
+      console.log('🛑 End of final dashakam');
+      audio.pause();
+      currentCueIndex = -1;
+      updateCurrentInfo();
+    }
+  });
+
+ /* ============================
+     Tiny helpers (these are exactly the same you had)
+     ============================ */
+
+  /* THEME & FONT handling functions (kept) */
+const themes = {
+  dark: { primary: "#1c1c1e", "primary-dark": "#121212", "primary-light": "#2c2c2e", bg: "#000000", text: "#ffffff" },
+  light: { primary: "#f2f2f7", "primary-dark": "#d1d1d6", "primary-light": "#ffffff", bg: "#ffffff", text: "#1c1c1e" },
+  pink: { primary: "#ff375f", "primary-dark": "#bf0f3f", "primary-light": "#ff8fa0", bg: "#fff0f2", text: "#3c003c" },
+  purple: { primary: "#bf5af2", "primary-dark": "#7321bf", "primary-light": "#dab6f7", bg: "#f7f0ff", text: "#2c004c" },
+  blue: { primary: "#0a84ff", "primary-dark": "#0050cc", "primary-light": "#a6d1ff", bg: "#f0f8ff", text: "#003366" },
+  orange: { primary: "#ff9500", "primary-dark": "#cc7000", "primary-light": "#ffd49c", bg: "#fff6ed", text: "#663800" }
+};
+
+document.querySelectorAll(".theme-dot").forEach(dot => {
+  dot.addEventListener("click", () => {
+    const theme = dot.dataset.theme;
+    const t = themes[theme];
+    if (!t) return;
+
+    // Apply CSS variables dynamically
+    document.documentElement.style.setProperty("--accent", t.primary);
+    document.documentElement.style.setProperty("--accent-soft", t["primary-light"] + "22"); // subtle alpha
+    document.documentElement.style.setProperty("--page-bg", t.bg);
+    document.documentElement.style.setProperty("--text-primary", t.text);
+    document.documentElement.style.setProperty("--glass-strong", t["primary-dark"] + "b3");
+    document.documentElement.style.setProperty("--glass-soft", t["primary-dark"] + "8c");
+
+    // Mark active
+    document.querySelectorAll(".theme-dot").forEach(d => d.classList.remove("active"));
+    dot.classList.add("active");
+  });
+});
+
+function applyTheme(themeName) {
+  const vars = themes[themeName];
+  if (!vars) return;
+
+  const root = document.documentElement;
+
+  // Apply CSS variables
+  for (const [key, val] of Object.entries(vars)) {
+    root.style.setProperty(`--${key}`, val);
+  }
+
+  const accent = vars.primary;
+
+  // Accent for form controls
+  document.querySelectorAll('audio, input[type="range"]').forEach(el => {
+    el.style.accentColor = accent;
+  });
+
+  // Buttons and icons
+  document.querySelectorAll('button, button i, #audioControls i').forEach(el => {
+    el.style.color = vars.text;
+  });
+
+  // Main UI texts
+  const textElements = [
+    verseDiv, splitWordsDiv, meaningDiv,
+    timeDisplay, playPauseBtn, prevVerseBtn, nextVerseBtn,
+    prevDashakamBtn, nextDashakamBtn,
+    repeatVerseBtn, repeatDashakamBtn, speedBtn, muteBtn,
+    gotoToggle, ...document.querySelectorAll('.group-select')
+  ];
+
+  textElements.forEach(el => {
+    if (el) el.style.color = vars.text;
+  });
+
+  // Audio controls container
+  const ac = document.getElementById('audioControls');
+  if (ac) {
+    const isLight = document.body.classList.contains('light-theme');
+    ac.style.borderColor = vars["primary-dark"];
+    ac.style.background = isLight
+      ? `linear-gradient(180deg, #fafafa 0%, ${vars["primary-light"] || vars.bg} 100%)`
+      : `linear-gradient(180deg, ${vars["primary-light"]} 0%, ${vars.bg} 100%)`;
+  }
+
+  // Save theme
+  localStorage.setItem('theme', themeName);
+
+  // Theme dots
+  const themeDots = document.getElementById('themeDots');
+  if (themeDots) {
+    themeDots.querySelectorAll('.theme-dot').forEach(dot => {
+      dot.classList.toggle('active', dot.dataset.theme === themeName);
+    });
+  }
+
+  // Fix text/toggle contrast
+  const mode = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+  adjustTextContrastForTheme(vars, mode);
+  updateToggleColors();
+}
+
+function applyMode(mode) {
+  const body = document.body;
+
+  if (mode === 'light') {
+    body.classList.add('light-theme');
+    themeModeLabel.textContent = 'Light';
+    themeModeToggle.setAttribute('aria-pressed', 'true');
+  } else {
+    body.classList.remove('light-theme');
+    themeModeLabel.textContent = 'Dark';
+    themeModeToggle.setAttribute('aria-pressed', 'false');
+  }
+
+  localStorage.setItem('nm_theme_mode', mode);
+
+  // Immediately reapply current theme so visuals update instantly
+  const themeName = localStorage.getItem('theme') || 'green';
+  applyTheme(themeName);
+
+  // Update text & toggle colors
+  const vars = themes[themeName];
+  if (vars) updateTextColors(vars.text, mode);
+  updateToggleColors();
+}
+
+// ✅ Fixed version — now readable in Light mode + Black theme
+function adjustTextContrastForTheme(vars, mode) {
+  const isLight = mode === 'light';
+  const currentTheme = localStorage.getItem('theme');
+  const darkThemes = ['black', 'charcoal', 'maroon', 'brown'];
+
+  let textColor, bgColor;
+
+  if (isLight && darkThemes.includes(currentTheme)) {
+    // Light mode + dark theme → white bg, black text
+    textColor = '#000000';
+    bgColor = '#ffffff';
+  } else if (!isLight) {
+    // Dark mode → use theme’s own vars
+    textColor = vars.text;
+    bgColor = vars.bg;
+  } else {
+    // Light mode + normal (non-dark) theme
+    textColor = vars.text || '#000';
+    bgColor = vars.bg || '#f8f8f8';
+  }
+
+  [verseDiv, splitWordsDiv, meaningDiv].forEach(el => {
+    if (!el) return;
+    el.style.color = textColor;
+    el.style.backgroundColor = bgColor;
+  });
+}
+
+function updateToggleColors() {
+  const themeModeLabelEl = document.getElementById('themeModeLabel');
+  const themeModeToggleEl = document.getElementById('themeModeToggle');
+  if (!themeModeLabelEl || !themeModeToggleEl) return;
+
+  const isLightMode = document.body.classList.contains('light-theme');
+  const toggleTextColor = isLightMode ? '#000' : '#fff';
+  const toggleBgColor = isLightMode ? '#fff' : '#000';
+
+  themeModeLabelEl.style.color = toggleTextColor;
+  themeModeToggleEl.style.color = toggleTextColor;
+  themeModeToggleEl.style.backgroundColor = toggleBgColor;
+}
+
+function updateTextColors(color, mode) {
+  const bg = mode === 'light' ? '#fff' : '#000';
+  const textColor = color || (mode === 'light' ? '#000' : '#fff');
+
+  const textElements = [
+    verseDiv, splitWordsDiv, meaningDiv,
+    timeDisplay, playPauseBtn, prevVerseBtn, nextVerseBtn,
+    prevDashakamBtn, nextDashakamBtn,
+    repeatVerseBtn, repeatDashakamBtn, speedBtn, muteBtn,
+    gotoToggle,
+    ...document.querySelectorAll('.group-select')
+  ];
+
+  textElements.forEach(el => {
+    if (el) el.style.color = textColor;
+  });
+
+  document.body.style.backgroundColor = bg;
+  updateToggleColors();
+}
+
+
+
+
+
+
+function initThemeDots(defaultTheme = 'green') {
+  const themeDotsEl = document.getElementById('themeDots');
+  if (!themeDotsEl) return;
+
+  themeDotsEl.querySelectorAll('.theme-dot').forEach(btn => {
+    const themeName = btn.dataset.theme;
+    const themeVars = themes[themeName];
+
+    // Ensure every button gets a color
+    if(themeVars && themeVars.primary) {
+      btn.style.backgroundColor = themeVars.primary;
+      btn.style.border = '2px solid #fff'; // optional: better visibility
+    } else {
+      // fallback color for missing theme
+      btn.style.backgroundColor = '#555';
+    }
+
+    // Add click handler
+    btn.addEventListener('click', () => {
+      applyTheme(themeName);
+    });
+  });
+
+  // Apply saved or default theme
+  const saved = localStorage.getItem('theme') || defaultTheme;
+  applyTheme(saved);
+}
+
+
+
+  /*** Build UI and initial load ***/
+  initThemeDots();
+  initSpeedButton();
+  initFontSelectors();
+  initFontSizeControls();
+  buildGroupGrid();
+  loadDashakam('001').catch(e => console.error('initial loadDashakam error', e));
+
+ 
+  function initSpeedButton() {
+    const audioEl = document.getElementById('audio');
+    const speedBtnEl = document.getElementById('speedBtn');
+    if (!audioEl || !speedBtnEl) return;
+    const speeds = [0.75, 1.0, 1.25, 1.5, 2.0];
+    let currentIndex = 1;
+    const savedSpeed = parseFloat(localStorage.getItem('playbackSpeed'));
+    if (!isNaN(savedSpeed) && speeds.includes(savedSpeed)) {
+      audioEl.playbackRate = savedSpeed;
+      currentIndex = speeds.indexOf(savedSpeed);
+    }
+    function updateSpeedLabel() {
+      speedBtnEl.innerHTML = `<i class="fas fa-tachometer-alt"></i> ${speeds[currentIndex]}×`;
+    }
+    updateSpeedLabel();
+    speedBtnEl.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % speeds.length;
+      const newSpeed = speeds[currentIndex];
+      audioEl.playbackRate = newSpeed;
+      localStorage.setItem('playbackSpeed', newSpeed);
+      updateSpeedLabel();
+    });
+  }
+
+  function initFontSelectors() {
+    const uiFontContainer = document.getElementById('uiFontOptions');
+    const devaFontContainer = document.getElementById('devaFontOptions');
+
+    const savedUIFont = localStorage.getItem('uiFont') || '"Poppins", "Segoe UI", sans-serif';
+    const savedDevaFont = localStorage.getItem('devaFont') || '"Tiro Devanagari Hindi", serif';
+    applyFonts(savedUIFont, savedDevaFont);
+
+    uiFontContainer.querySelectorAll('.font-swatch').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.font === savedUIFont);
+      btn.addEventListener('click', () => {
+        applyFonts(btn.dataset.font, savedDevaFont);
+        uiFontContainer.querySelectorAll('.font-swatch').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    devaFontContainer.querySelectorAll('.font-swatch').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.font === savedDevaFont);
+      btn.addEventListener('click', () => {
+        applyFonts(savedUIFont, btn.dataset.font);
+        devaFontContainer.querySelectorAll('.font-swatch').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  }
+
+  function applyFontScale(scale) {
+    document.documentElement.style.setProperty('--font-scale', scale);
+    localStorage.setItem('fontScale', scale);
+    syncSplitWordsSize();
+  }
+  function syncSplitWordsSize() {
+    const verseEl = document.getElementById('verse');
+    const splitEl = document.getElementById('splitWords');
+    if (!verseEl || !splitEl) return;
+    const verseSize = parseFloat(window.getComputedStyle(verseEl).fontSize);
+    splitEl.style.fontSize = (verseSize * 0.7) + 'px';
+  }
+
+  function initFontSizeControls() {
+    const smaller = document.getElementById('fontSmaller');
+    const larger = document.getElementById('fontLarger');
+    let scale = parseFloat(localStorage.getItem('fontScale')) || 1;
+    applyFontScale(scale);
+    smaller.addEventListener('click', () => {
+      scale = Math.max(0.7, scale - 0.1);
+      applyFontScale(scale);
+    });
+    larger.addEventListener('click', () => {
+      scale = Math.min(1.6, scale + 0.1);
+      applyFontScale(scale);
+    });
+  }
+
+  function applyFonts(uiFont, devaFont) {
+    document.documentElement.style.setProperty('--ui-font', uiFont);
+    document.documentElement.style.setProperty('--deva-font', devaFont);
+    localStorage.setItem('uiFont', uiFont);
+    localStorage.setItem('devaFont', devaFont);
+
+    document.querySelectorAll('#uiFontOptions .font-swatch').forEach(el => {
+      el.classList.toggle('active', el.dataset.font === uiFont);
+    });
+    document.querySelectorAll('#devaFontOptions .font-swatch').forEach(el => {
+      el.classList.toggle('active', el.dataset.font === devaFont);
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'green';
+    const savedUiFont = localStorage.getItem('uiFont') || '"Poppins", "Segoe UI", sans-serif';
+    const savedDevaFont = localStorage.getItem('devaFont') || '"Tiro Devanagari Hindi", serif';
+    applyTheme(savedTheme);
+    applyFonts(savedUiFont, savedDevaFont);
+  });
+
+  // safe guards for non-existing selects (keeps original behavior)
+  const safeGet = id => document.getElementById(id) || { addEventListener: ()=>{}, value: '' };
+  safeGet('themeSelect').addEventListener('change', e => applyTheme(e.target.value));
+  safeGet('uiFontSelect').addEventListener('change', e => {
+    const uiFont = e.target.value;
+    const devaFont = localStorage.getItem('devaFont') || '"Tiro Devanagari Hindi", serif';
+    applyFonts(uiFont, devaFont);
+  });
+  safeGet('devaFontSelect').addEventListener('change', e => {
+    const devaFont = e.target.value;
+    const uiFont = localStorage.getItem('uiFont') || '"Poppins", "Segoe UI", sans-serif';
+    applyFonts(uiFont, devaFont);
+  });
+
+  /* ===========
+     Theme Mode Toggle (Dark <-> Light)
+     - This only affects CSS variables via body class.
+     - It does not change any sizes/layout (subtitle container unchanged).
+     ============ */
+  const themeModeToggle = document.getElementById('themeModeToggle');
+  const themeModeLabel = document.getElementById('themeModeLabel');
+
+  // initialize from localStorage (default: dark)
+  const savedMode = localStorage.getItem('nm_theme_mode') || 'dark';
+  function applyMode(mode){
+    if(mode === 'light'){
+      document.body.classList.add('light-theme');
+      themeModeLabel.textContent = 'Light';
+      themeModeToggle.setAttribute('aria-pressed','true');
+    } else {
+      document.body.classList.remove('light-theme');
+      themeModeLabel.textContent = 'Dark';
+      themeModeToggle.setAttribute('aria-pressed','false');
+    }
+    localStorage.setItem('nm_theme_mode', mode);
+  }
+  applyMode(savedMode);
+
+  themeModeToggle.addEventListener('click', () => {
+    const now = document.body.classList.contains('light-theme') ? 'dark' : 'light';
+    applyMode(now);
+  });
+
+}); // end DOMContentLoaded
+</script>
+
+  </main>
+</body>
+</html>

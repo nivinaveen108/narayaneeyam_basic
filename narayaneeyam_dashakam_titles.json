@@ -1,0 +1,503 @@
+[
+  {
+    "number": 1,
+    "sanskrit_title": "भगवतः स्वरूपं तथा माहात्म्यम् ।",
+    "english_title": "Form and Glory of the Lord"
+  },
+  {
+    "number": 2,
+    "sanskrit_title": "भगवतः स्वरूपमाधुर्यं तथा भक्तिमहत्त्वम् ।",
+    "english_title": "Form of the Lord And Greatness of Devotion"
+  },
+  {
+    "number": 3,
+    "sanskrit_title": "उत्तमभक्तस्य गुणाः ।",
+    "english_title": "The Qualities of the Perfect Devotee"
+  },
+  {
+    "number": 4,
+    "sanskrit_title": "योगाभ्यासः तथा योगसिद्धिः ।",
+    "english_title": "Yoga And Its Attainment"
+  },
+  {
+    "number": 5,
+    "sanskrit_title": "विराट्-पुरुषोत्पत्तिः ।",
+    "english_title": "Cosmic Evoluion"
+  },
+  {
+    "number": 6,
+    "sanskrit_title": "विराट्-स्वरूपवर्णनम् ।",
+    "english_title": "The Cosmos as the Form of the Lord"
+  },
+  {
+    "number": 7,
+    "sanskrit_title": "स्तस्योर्ध्वं खलु सत्यलोकनिलये जातोऽसि धाता स्वयम् ।",
+    "english_title": "Bahma's Origin, Penance And Vision of Vaikuntha"
+  },
+  {
+    "number": 8,
+    "sanskrit_title": "प्रलयवर्णनम् ।",
+    "english_title": "Description of Pralaya"
+  },
+  {
+    "number": 9,
+    "sanskrit_title": "ब्रह्मणः तपः तथा लोकसृष्टिः ।",
+    "english_title": "Description of Creation"
+  },
+  {
+    "number": 10,
+    "sanskrit_title": "सृष्टिवैविध्यम् ।",
+    "english_title": "The Variety of Creation"
+  },
+  {
+    "number": 11,
+    "sanskrit_title": "सनकादीनां वैकुण्ठदर्शनम् । हिरण्याक्षस्य तथा हिरण्यकशिपोः जननम् ।",
+    "english_title": "- Entry of Sanaka And Others Into Vaikuntha and"
+  },
+  {
+    "number": 12,
+    "sanskrit_title": "वराहावतारम् ।",
+    "english_title": "- The Boar Incarnation"
+  },
+  {
+    "number": 13,
+    "sanskrit_title": "हिरण्याक्षवधम् ।",
+    "english_title": "- The Slaying of HiranyakSha"
+  },
+  {
+    "number": 14,
+    "sanskrit_title": "कपिलावतारम् ।",
+    "english_title": "- The Kapila Incarnation"
+  },
+  {
+    "number": 15,
+    "sanskrit_title": "कपिलोपदेशम् ।",
+    "english_title": "- The Teachings of Kapila"
+  },
+  {
+    "number": 16,
+    "sanskrit_title": "नरनारायणावतारं तथा दक्षयागः ।",
+    "english_title": "- Nara Narayana And DakShayaga"
+  },
+  {
+    "number": 17,
+    "sanskrit_title": "ध्रुवचरितम् ।",
+    "english_title": "- The Story of Dhruva"
+  },
+  {
+    "number": 18,
+    "sanskrit_title": "पृथुचरितम् ।",
+    "english_title": "- The Story of Prithu"
+  },
+  {
+    "number": 19,
+    "sanskrit_title": "प्रचेतॄणां चरितम् ।",
+    "english_title": "-The Story of Pracetas"
+  },
+  {
+    "number": 20,
+    "sanskrit_title": "ऋषभयोगीश्वरचरितम् ।",
+    "english_title": "- The Story of Rishabhayogishvara"
+  },
+  {
+    "number": 21,
+    "sanskrit_title": "नव वर्षाः तथा सप्तद्वीपाः । जम्बूद्वीपादिषु उपासनापद्धतिः ।",
+    "english_title": "- Mode of Worship In Jambudvipa Etc"
+  },
+  {
+    "number": 22,
+    "sanskrit_title": "अजामिलोपाख्यानम् ।",
+    "english_title": "- The Story of Ajamila"
+  },
+  {
+    "number": 23,
+    "sanskrit_title": "दक्षचरितं तथा चित्रकेतूपाख्यानम् ।",
+    "english_title": "- The Stories of DakSha, Chitraketu, Etc"
+  },
+  {
+    "number": 24,
+    "sanskrit_title": "प्रह्लादचरितम् ।",
+    "english_title": "- The Story of Prahlada"
+  },
+  {
+    "number": 25,
+    "sanskrit_title": "नरसिंहावतारम् ।",
+    "english_title": "- Incarnation As Narasimha"
+  },
+  {
+    "number": 26,
+    "sanskrit_title": "गजेन्द्रमोक्षम् ।",
+    "english_title": "- The Liberation of Gajendra"
+  },
+  {
+    "number": 27,
+    "sanskrit_title": "क्षीराब्धिमथनं तथा कूर्मावतारम् ।",
+    "english_title": "- Churning of the Milk Ocean and Tortoise Incarnation"
+  },
+  {
+    "number": 28,
+    "sanskrit_title": "लक्ष्मीस्वयंवरं तथा अमृतोत्पत्तिः ।",
+    "english_title": "- Self-Choice Marriage of Lakshmi and Emergence of Nectar."
+  },
+  {
+    "number": 29,
+    "sanskrit_title": "मोहिन्यवतारं आदि ।",
+    "english_title": "- Mohini Incarnation, Etc"
+  },
+  {
+    "number": 30,
+    "sanskrit_title": "वामनावतारम् ।",
+    "english_title": "- Vamana Incarnation"
+  },
+  {
+    "number": 31,
+    "sanskrit_title": "बलिदर्पहरणम् ।",
+    "english_title": "- Humbling of Bali"
+  },
+  {
+    "number": 32,
+    "sanskrit_title": "मत्स्यावतारम् ।",
+    "english_title": "- Matsya Avatar"
+  },
+  {
+    "number": 33,
+    "sanskrit_title": "अम्बरीषचरितम् ।",
+    "english_title": "- The Story of Ambarisha"
+  },
+  {
+    "number": 34,
+    "sanskrit_title": "पुत्रीयामिष्टिमिष्ट्वा ददुषि दशरथक्ष्माभृते पायसाग्र्यम् ।",
+    "english_title": "- Sri Rama Avatar-1"
+  },
+  {
+    "number": 35,
+    "sanskrit_title": "क्षिप्त्वाङ्गुष्ठेन भूयो लुलविथ युगपत्पत्रिणा सप्त सालान् ।",
+    "english_title": "- Sri Rama Avatar contd."
+  },
+  {
+    "number": 36,
+    "sanskrit_title": "परशुरामावतारम् ।",
+    "english_title": "- Parasurama Avatar"
+  },
+  {
+    "number": 37,
+    "sanskrit_title": "श्रीकृष्णावतारोपक्रमम् ।",
+    "english_title": "- Prelude To the Incarnation As Krishna"
+  },
+   {
+    "number": 38,
+    "sanskrit_title": "श्री कृष्ण का जन्म ।",
+    "english_title": "- The Birth of Shri Krishna"
+  },
+  {
+    "number": 39,
+    "sanskrit_title": "ददर्श गगनोच्चलज्जलभरां कलिन्दात्मजाम् ।",
+    "english_title": "- Manifestation of Yogamaya and Celebration of Birth of Shrikrishna at Gokula"
+  },
+  {
+    "number": 40,
+    "sanskrit_title": "पूतनामोक्षम् ।",
+    "english_title": "- Salvation of Putana"
+  },
+  {
+    "number": 41,
+    "sanskrit_title": "पूतनादहनं तथा कृष्णलाळनाह्लादम् ।",
+    "english_title": "- Cremation of Putana and Joy of Caressing Krishna"
+  },
+  {
+    "number": 42,
+    "sanskrit_title": "शकटासुरवधम् ।",
+    "english_title": "- Slaying of Shakatasura"
+  },
+  {
+    "number": 43,
+    "sanskrit_title": "तृणावर्तवधम् ।",
+    "english_title": "- The Slaying of Trinavarta"
+  },
+  {
+    "number": 44,
+    "sanskrit_title": "नामकरणसंस्कारादि ।",
+    "english_title": "- Naming Ceremony Etc"
+  },
+  {
+    "number": 45,
+    "sanskrit_title": "श्रीकृष्णस्य बाललीलाः ।",
+    "english_title": "- Krishna's Childhood Pranks"
+  },
+  {
+    "number": 46,
+    "sanskrit_title": "विश्वरूपदर्शनम् ।",
+    "english_title": "- Revelation of the Cosmic Form"
+  },
+  {
+    "number": 47,
+    "sanskrit_title": "उलूखलबन्धनम् ।",
+    "english_title": "- Tying Krishna To the Mortar"
+  },
+  {
+    "number": 48,
+    "sanskrit_title": "नळकूबर-मणिग्रीवयोः शापमोक्षम् ।",
+    "english_title": "- Redemption of Nalakubara And Manigriva"
+  },
+  {
+    "number": 49,
+    "sanskrit_title": "वृन्दावनप्रवेशम् ।",
+    "english_title": "- Journey To Vrindavana"
+  },
+  {
+    "number": 50,
+    "sanskrit_title": "वत्सासुर-बकासुरयोः वधम् ।",
+    "english_title": "- Slaying of VatsAsura And BakAsura"
+  },
+  
+  {
+    "number": 51,
+    "sanskrit_title": "अघासुर वधम् ।",
+    "english_title": "- Slaying of Aghasura"
+  },
+  {
+    "number": 52,
+    "sanskrit_title": "वत्सस्तेयं तथा ब्रह्मगर्वशमनम् ।",
+    "english_title": "- The Stealing of the Calves By Brahma And Humbling of Brahma's Pride."
+  },
+  {
+    "number": 53,
+    "sanskrit_title": "धेनुकासुरवधम् ।",
+    "english_title": "- Slaying of Dhenukasura"
+  },
+  {
+    "number": 54,
+    "sanskrit_title": "त्वत्सेवोत्कः सौभरिर्नाम पूर्वं कालिन्द्यन्तर्द्वादशाब्दं तपस्यन् ।",
+    "english_title": "- Reason For Kaliya Coming To the Yamuna And Affliction by Poison."
+  },
+  {
+    "number": 55,
+    "sanskrit_title": "कालियनर्तनम् ।",
+    "english_title": "- Krishna's Dance On Kaliya"
+  },
+  {
+    "number": 56,
+    "sanskrit_title": "कालियगर्वशमनं तथा भगवदनुग्रहम् ।",
+    "english_title": "- Humbling of Kalia's Pride And Lord Blessing Kaliya"
+  },
+  {
+    "number": 57,
+    "sanskrit_title": "प्रलम्बासुरवधम् ।",
+    "english_title": "- Slaying of Pralambasura"
+  },
+  {
+    "number": 58,
+    "sanskrit_title": "दावाग्निसंरक्षणं तथा ऋतुवर्णनम् ।",
+    "english_title": "- Rescue From Forest Fire and Description of Seasons"
+  },
+  {
+    "number": 59,
+    "sanskrit_title": "वेणुगानवर्णनम् ।",
+    "english_title": "- Krishna Playing the Flute"
+  },
+  {
+    "number": 60,
+    "sanskrit_title": "गोपीवस्त्रापहरणम् ।",
+    "english_title": "- Stealing the Clothes of the Gopikas"
+  },
+  {
+    "number": 61,
+    "sanskrit_title": "विप्रपत्न्यनुग्रहम् ।",
+    "english_title": "- Blessing the Wives of the Performers of Vedic Sacrifices"
+  },
+  {
+    "number": 62,
+    "sanskrit_title": "इन्द्रयज्ञनिरोधनं तथा गोवर्धनयागम् ।",
+    "english_title": "- Blocking of the Sacrifice To Indra And Performance of Sacrifice to Govardhana"
+  },
+  {
+    "number": 63,
+    "sanskrit_title": "गोवर्धनोद्धारणम् ।",
+    "english_title": "- Holding Up the Govardhana Mountain"
+  },
+  {
+    "number": 64,
+    "sanskrit_title": "गोविन्दपट्टाभिषेकम् ।",
+    "english_title": "- Crowning As Govinda"
+  },
+  {
+    "number": 65,
+    "sanskrit_title": "गोपिकानां भगवत्सामीप्यप्राप्तिः ।",
+    "english_title": "- Gopikas' Coming To Krishna"
+  },
+  {
+    "number": 66,
+    "sanskrit_title": "गोपीजनाह्लादनम् ।",
+    "english_title": "- Delighting the Gopikas"
+  },
+  {
+    "number": 67,
+    "sanskrit_title": "श्रीकृष्णतिरोधानं तथा पुनः प्रत्यक्षीभूय गोपिकाः प्रीणनम् ।",
+    "english_title": "- Disappearance of the Lord and Reappearance, Etc"
+  },
+  {
+    "number": 68,
+    "sanskrit_title": "गपिकानां आह्लादप्रकटनम् ।",
+    "english_title": "- Gopikas In the Lord's Joyous Company"
+  },
+  {
+    "number": 69,
+    "sanskrit_title": "रासक्रीडा ।",
+    "english_title": "- Rasakreeda"
+  },
+  {
+    "number": 70,
+    "sanskrit_title": "सुदर्शनशापमोक्षं तथा शङ्खचूड-अरिष्टवधम् ।",
+    "english_title": "- Salvation of Sudarsana And Slaying of Shankhachuda And Arishta"
+  },
+  {
+    "number": 71,
+    "sanskrit_title": "केशी तथा व्योमासुरवधम् ।",
+    "english_title": "- Slaying of Kesi And Vyomasura"
+  },
+  {
+    "number": 72,
+    "sanskrit_title": "अक्रूरगोकुलयात्रा ।",
+    "english_title": "- Akrura's Journey To Gokula"
+  },
+  {
+    "number": 73,
+    "sanskrit_title": "श्रीकृष्णस्य मथुरायात्रा ।",
+    "english_title": "- The Lord Leaving For Mathura"
+  },
+  {
+    "number": 74,
+    "sanskrit_title": "भगवतः मथुरापुरीप्रवेशम् ।",
+    "english_title": "- Entry of the Lord Into Mathura"
+  },
+  {
+    "number": 75,
+    "sanskrit_title": "कंसवधम् ।",
+    "english_title": "- Slaying of Kamsa"
+  },
+  {
+    "number": 76,
+    "sanskrit_title": "उद्धवदौत्यम् ।",
+    "english_title": "- Uddhava Sent As A Messenger To the Gopikas"
+  },
+  {
+    "number": 77,
+    "sanskrit_title": "जरासन्धादिभिः सह युद्धम् ।",
+    "english_title": "- Fight Against Jarasandha And Others"
+  },
+  {
+    "number": 78,
+    "sanskrit_title": "द्वारकावासः तथा रुक्मिणीसन्देशप्राप्तिः ।",
+    "english_title": "- Rukmini Swayamvaram"
+  },
+  {
+    "number": 79,
+    "sanskrit_title": "रुक्मिणीहरणं-विवाहम् ।",
+    "english_title": "- Rukmini Haranam and Kalyanam"
+  },
+  {
+    "number": 80,
+    "sanskrit_title": "स्यमन्तकोपाख्यानम् ।",
+    "english_title": "- Story of the Syamantaka Jewel"
+  },
+  {
+    "number": 81,
+    "sanskrit_title": "नरकासुरवधं तथा सुभद्राहरणम् ।",
+    "english_title": "- Slaying of Narakasura And Abduction of Subhadra"
+  },
+  {
+    "number": 82,
+    "sanskrit_title": "बाणासुरयुद्धं तथा नृगशापमोक्षम् ।",
+    "english_title": "- Fight With Bana - Deliverence of Nriga"
+  },
+  {
+    "number": 83,
+    "sanskrit_title": "पौण्ड्रकवधं - द्निनिदवधम् ।",
+    "english_title": "- Slaying of Paundraka and Dvivida"
+  },
+  {
+    "number": 84,
+    "sanskrit_title": "समन्तपञ्चकतीर्थयात्रा । - बन्धुमित्रादि समागमम् ।",
+    "english_title": "- Pilgrimage To Samantapanchaka - Meeting with Relatives and Friends."
+  },
+  {
+    "number": 85,
+    "sanskrit_title": "जरासन्धवधं - शिशुपालवधम् ।",
+    "english_title": "- Slaying of Jarasandha And Shishupala"
+  },
+  {
+    "number": 86,
+    "sanskrit_title": "साल्ववधम् - महाभारतयुद्धम् ।",
+    "english_title": "- Slaying of Salva - Battle of Mahabharata"
+  },
+  {
+    "number": 87,
+    "sanskrit_title": "कुचेलोपाख्यानम् ।",
+    "english_title": "- Kuchela Episode"
+  },
+  {
+    "number": 88,
+    "sanskrit_title": "सन्तानगोपालम् ।",
+    "english_title": "- Episode of Santana Gopalam"
+  },
+  {
+    "number": 89,
+    "sanskrit_title": "वृकासुरवधं - भृगुपरीक्षणम् ।",
+    "english_title": "- Slaying of Vrikasura - Test by Bhrigu"
+  },
+  {
+    "number": 90,
+    "sanskrit_title": "विष्णुमहत्तत्त्वस्थापनम् ।",
+    "english_title": "- Establishment of Greatness of Vishnu"
+  },
+  {
+    "number": 91,
+    "sanskrit_title": "भक्तिमहत्त्वम् ।",
+    "english_title": "- Greatness of Devotion"
+  },
+  {
+    "number": 92,
+    "sanskrit_title": "कर्ममिश्रभक्तिः ।",
+    "english_title": "- Bhakti Combined With Karma"
+  },
+  {
+    "number": 93,
+    "sanskrit_title": "पञ्चविंशति गुरवः ।",
+    "english_title": "- Lessons from 25 Gurus"
+  },
+  {
+    "number": 94,
+    "sanskrit_title": "तत्त्वज्ञानोत्पत्तिः ।",
+    "english_title": "- Means of Enlightenment"
+  },
+  {
+    "number": 95,
+    "sanskrit_title": "जीवत्वं प्राप्य मायागुणगणखचितो वर्तसे विश्वयोने ।",
+    "english_title": "- Yoga of Meditation - Means of Liberation"
+  },
+  {
+    "number": 96,
+    "sanskrit_title": "भगवद्विभूतयः तथा ज्ञानकर्मभक्तियोगाः ।",
+    "english_title": "- Glories of the Lord and JnAna-Karma-Bhakti Yogas"
+  },
+  {
+    "number": 97,
+    "sanskrit_title": "उत्तमभक्तिप्रार्थना ।",
+    "english_title": "- Prayer For Supreme Devotion"
+  },
+  {
+    "number": 98,
+    "sanskrit_title": "निष्कलब्रह्मोपासनम् ।",
+    "english_title": "- Meditation On Nirguna Brahman"
+  },
+  {
+    "number": 99,
+    "sanskrit_title": "वेदमन्त्रमूलात्मका विष्णुस्तुतिः ।",
+    "english_title": "- Praise of the Glory of the Lord"
+  },
+  {
+    "number": 100,
+    "sanskrit_title": "भगवतः केशादिपादवर्णनम् ।",
+    "english_title": "- Description of the Vision of the Lord"
+  }
+]
