@@ -884,40 +884,26 @@ body.light-theme .top-button:hover {
             
 /*** Cue parsing ***/
 function parseCueText(text) {
-  if (!text) {
-    return {
-      verseDev: "",
-      splitDev: "",
-      verseMalayalam: "",
-      splitMalayalam: "",
-      verseEnglish: "",
-      splitEnglish: "",
-      verseTrans: "",
-      splitTrans: "",
-      meaning: ""
-    };
-  }
+  if (!text) return emptyResult();
 
-  // Convert to lines
-  const cleanedLines = text
+  // Remove only "Translation failed" lines
+  const cleaned = text
     .split(/\r?\n/)
-    .map(l => l.trim())
+    .map(x => x.trim())
     .filter(Boolean)
-    .filter(l => !l.includes("Translation failed"));   // DELETE these lines
+    .filter(x => !x.includes("Translation failed"))
+    .join("\n");
 
-  const finalText = cleanedLines.join("\n");
-
-  // Return the SAME text in ALL relevant fields
   return {
-    verseDev: finalText,
-    splitDev: finalText,
-    verseMalayalam: finalText,
-    splitMalayalam: finalText,
-    verseEnglish: finalText,
-    splitEnglish: finalText,
-    verseTrans: finalText,
-    splitTrans: finalText,
-    meaning: finalText
+    verseDev: cleaned,
+    splitDev: "",
+    verseMalayalam: cleaned,
+    splitMalayalam: "",
+    verseEnglish: cleaned,
+    splitEnglish: "",
+    verseTrans: "",
+    splitTrans: "",
+    meaning: ""
   };
 }
 
@@ -929,9 +915,12 @@ function emptyResult() {
     splitMalayalam: "",
     verseEnglish: "",
     splitEnglish: "",
+    verseTrans: "",
+    splitTrans: "",
     meaning: ""
   };
 }
+
 
 
 
