@@ -1320,7 +1320,7 @@ meaningRaw = meaningRaw || "";
     });
 
     // load subtitles
-    cues = await loadVTT(`vtt_fixed_output_time/Narayaneeyam_D${val}.vtt`);
+    cues = await loadVTT(`vtt_time_devanagari_english/Narayaneeyam_D${val}.vtt`);
     currentCueIndex = -1;
     verseDiv.innerHTML = splitWordsDiv.innerHTML = meaningDiv.innerHTML = "";
 
@@ -1777,10 +1777,10 @@ plus10DashakamBtn.addEventListener('click', async () => {
                         
             async function loadTranslitCues(dashNum = null) {
                 dashNum = dashNum || String(currentDashakam).padStart(3, '0');
-                let vttFolder = 'vtt_fixed_time_transliterated';
-                if (translitState === 'english') vttFolder = 'vtt_fixed_time_transliterated';
-                else if (translitState === 'devanagari') vttFolder = 'vtt_fixed_output_time';
-                else if (translitState === 'malayalam') vttFolder = 'vtt_time_malayalam_translated';
+                let vttFolder = 'vtt_time_devanagari_tamil';
+                if (translitState === 'english') vttFolder = 'vtt_time_devanagari_tamil';
+                else if (translitState === 'devanagari') vttFolder = 'vtt_time_devanagari_english';
+                else if (translitState === 'malayalam') vttFolder = 'vtt_time_devanagari_malayalam';
             
                 cues = await loadVTT(`${vttFolder}/Narayaneeyam_D${dashNum}.vtt`);
             
