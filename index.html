@@ -878,172 +878,40 @@ body.light-theme .top-button:hover {
             
 /*** Cue parsing ***/
 function parseCueText(text) {
-  const lines = (text || '')
-    .trim()
+  if (!text) {
+    return {
+      verseDev: "",
+      splitDev: "",
+      verseMalayalam: "",
+      splitMalayalam: "",
+      verseEnglish: "",
+      splitEnglish: "",
+      verseTrans: "",
+      splitTrans: "",
+      meaning: ""
+    };
+  }
+
+  // Convert to lines
+  const cleanedLines = text
     .split(/\r?\n/)
     .map(l => l.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .filter(l => !l.includes("Translation failed"));   // DELETE these lines
 
-  if (lines.length === 0) return emptyResult();
+  const finalText = cleanedLines.join("\n");
 
-  const firstContent = lines.find(l => !/^[0-9:.\-> ]+$/.test(l)) || '';
-
-  // --- LANGUAGE DETECTION ---
-  if (/[\u0900-\u097F]/.test(firstContent)) return parseDevanagari(lines);
-  if (/[\u0D00-\u0D7F]/.test(firstContent)) return parseMalayalam(lines);
-  return parseEnglish(lines);
-}
-
-// ----------------------------------------------------------
-// 1) DEVANAGARI
-// ----------------------------------------------------------
-function parseDevanagari(lines) {
-  const verseEndRegex = /॥\s*[०-९0-9]+\s*॥/;
-
-  const verseLines = [];      // always Devanagari verse
-  const malayalamLines = [];  // split words (Malayalam section)
-  const englishLines = [];    // meaning (ASCII)
-
-  let foundVerseEnd = false;
-  let foundMeaningStart = false;
-
-  for (const line of lines) {
-
-    if (!foundVerseEnd) {
-      // Before verse end → everything is verse
-      verseLines.push(line);
-      if (verseEndRegex.test(line)) foundVerseEnd = true;
-
-    } else if (!foundMeaningStart) {
-
-      if (isAscii(line)) {
-        // First ASCII line → meaning starts
-        foundMeaningStart = true;
-        englishLines.push(line);
-
-      } else if (/[\u0D00-\u0D7F]/.test(line)) {
-        // Malayalam → split words
-        malayalamLines.push(line);
-
-      } else {
-        // Unexpected → treat as Malayalam/split
-        malayalamLines.push(line);
-      }
-
-    } else {
-      // After meaning starts → everything is meaning
-      englishLines.push(line);
-    }
-  }
-
+  // Return the SAME text in ALL relevant fields
   return {
-    verseDev: verseLines.join("\n"),
-    splitDev: malayalamLines.join("\n"),
-
-    // no Malayalam or English verse for Devanagari
-    verseMalayalam: "",
-    splitMalayalam: "",
-
-    verseEnglish: englishLines.join("\n"),
-    splitEnglish: englishLines.join("\n"),
-
-    meaning: englishLines.join("\n")
-  };
-}
-
-
-// ----------------------------------------------------------
-// 2) MALAYALAM
-// ----------------------------------------------------------
-function parseMalayalam(lines) {
-  const verseLines = [];
-  const splitLines = [];
-  const meaningLines = [];
-
-  const verseEndRegex = /\.\.\s*\d+\s*\.\./;
-
-  let foundVerseEnd = false;
-  let foundMeaning = false;
-
-  for (const line of lines) {
-    if (!foundVerseEnd) {
-      verseLines.push(line);
-      if (verseEndRegex.test(line)) foundVerseEnd = true;
-
-    } else if (!foundMeaning) {
-      if (/[\u0D00-\u0D7F]/.test(line)) splitLines.push(line);
-      else {
-        foundMeaning = true;
-        meaningLines.push(line);
-      }
-
-    } else {
-      meaningLines.push(line);
-    }
-  }
-
-  return {
-    verseDev: "",
-    splitDev: "",
-
-    verseMalayalam: verseLines.join("\n"),
-    splitMalayalam: splitLines.join("\n"),
-
-    verseEnglish: "",
-    splitEnglish: "",
-
-    meaning: meaningLines.join("\n")
-  };
-}
-
-// ----------------------------------------------------------
-// 3) ENGLISH TRANSLITERATION
-// ----------------------------------------------------------
-function parseEnglish(lines) {
-  const verseEndRegex = /\|\|\s*\d+\s*\|\|/;   // example:  || 1 ||
-
-  const verseLines = [];
-  const splitLines = [];
-  const meaningLines = [];
-
-  let foundVerseEnd = false;
-  let foundMeaning = false;
-
-  for (const line of lines) {
-
-    // 1) VERSE SECTION: before "|| n ||"
-    if (!foundVerseEnd) {
-      verseLines.push(line);
-      if (verseEndRegex.test(line)) {
-        foundVerseEnd = true;
-      }
-      continue;
-    }
-
-    // 2) SPLIT-WORD SECTION: after verse end, until real English meaning begins
-    if (!foundMeaning) {
-      // split lines always have a KEY + gap + MEANING
-      // detected by tab or more than one space
-      if (/\t/.test(line) || / {2,}/.test(line)) {
-        splitLines.push(line);
-      } else {
-        // first plain English sentence = meaning starts
-        foundMeaning = true;
-        meaningLines.push(line);
-      }
-      continue;
-    }
-
-    // 3) MEANING SECTION
-    meaningLines.push(line);
-  }
-
-  return {
-    verseDev: "",
-    splitDev: "",
-    verseTrans: verseLines.join("\n"),
-    splitTrans: splitLines.join("\n"),
-    meaning: meaningLines.join("\n")
+    verseDev: finalText,
+    splitDev: finalText,
+    verseMalayalam: finalText,
+    splitMalayalam: finalText,
+    verseEnglish: finalText,
+    splitEnglish: finalText,
+    verseTrans: finalText,
+    splitTrans: finalText,
+    meaning: finalText
   };
 }
 
