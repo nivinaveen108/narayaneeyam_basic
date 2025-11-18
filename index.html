@@ -1038,8 +1038,9 @@ function autoDetectScript(txt) {
   // Malayalam
   if (/[അ-ൿ]/.test(txt)) return "malayalam";
 
-  // Tamil (vowels, consonants, aytam, and combining marks)
-  if (/[அ-ஔஃக-ஹ]/.test(txt)) return "tamil";
+ // Tamil: vowels, consonants, aytam, numerals, and combining marks
+if (/[\u0B80-\u0BFF]/.test(txt)) return "tamil";
+
 
   // Default to English/translit
   return "english";
@@ -1129,12 +1130,23 @@ const tamilRegex = /[\u0B80-\u0BFF]+/g;
                 return text.replace(re, m => `<span class="mahapraana">${m}</span>`);
               }
             if (script === 'tamil') {
-    const tamPatterns = sortByLengthDesc([
-  'க்ஹ','க்ஹா','ச்ஹ','ஜ்ஹ','ட்ஹ','ட்ஹா','த்ஹ','த்ஹா','ப்ஹ','ப்ஹா',
-  'ஸ்த்ஹ','ஸ்த்ஹி','ஸ்ப்ஹ','ஸ்ப்ஹு','ந்த்ஹ','ன்த்ஹ','ர்த்ஹ','ண்ட்ஹ',
-  'ச்ஹா','ச்ஹ்','ஸ்வ஛','ச்ஹ்ச','ச்ஹ்த',
-  'ர்ஹ','ப்த்ஹ','ப்த்ஹே','ர்த்ஹ','க்த்ஹ','ந்த்ஹ','ர்த்ஹ்ய','ர்த்ஹா'
+const tamPatterns = sortByLengthDesc([
+  // aspirates and clusters
+  'க்ஹ','க்ஹா','க்ஹி','க்ஹீ','க்ஹு','க்ஹூ','க்ஹெ','க்ஹே','க்ஹொ','க்ஹோ',
+  'ச்ஹ','ச்ஹா','ச்ஹி','ச்ஹீ','ச்ஹு','ச்ஹூ','ச்ஹெ','ச்ஹே','ச்ஹொ','ச்ஹோ',
+  'ஜ்ஹ','ஜ்ஹா','ஜ்ஹி','ஜ்ஹீ','ஜ்ஹு','ஜ்ஹூ','ஜ்ஹெ','ஜ்ஹே','ஜ்ஹொ','ஜ்ஹோ',
+  'ட்ஹ','ட்ஹா','ட்ஹி','ட்ஹீ','ட்ஹு','ட்ஹூ','ட்ஹெ','ட்ஹே','ட்ஹொ','ட்ஹோ',
+  'த்ஹ','த்ஹா','த்ஹி','த்ஹீ','த்ஹு','த்ஹூ','த்ஹெ','த்ஹே','த்ஹொ','த்ஹோ',
+  'ப்ஹ','ப்ஹா','ப்ஹி','ப்ஹீ','ப்ஹு','ப்ஹூ','ப்ஹெ','ப்ஹே','ப்ஹொ','ப்ஹோ',
+  // special clusters
+  'ஸ்த்ஹ','ஸ்த்ஹி','ஸ்த்ஹு','ஸ்ப்ஹ','ஸ்ப்ஹி','ஸ்ப்ஹு','ஸ்ப்ஹா','ஸ்ப்ஹோ',
+  'ந்த்ஹ','ந்த்ஹி','ந்த்ஹு','ந்த்ஹா','ந்த்ஹோ',
+  'ர்த்ஹ','ர்த்ஹி','ர்த்ஹு','ர்த்ஹா','ர்த்ஹோ',
+  'ர்ஹ','ர்ஹா','ர்ஹி','ர்ஹீ','ர்ஹு','ர்ஹூ',
+  // fallback: individual Tamil letters (to highlight single-letter aspirates)
+  'க','ங','ச','ஞ','ஜ','ட','ண','த','ந','ப','ம','ய','ர','ல','வ','ழ','ள','ற','ன'
 ]);
+
 
     const re = new RegExp(tamPatterns.join('|'), 'g');
     return text.replace(re, m => `<span class="mahapraana">${m}</span>`);
@@ -1180,14 +1192,26 @@ const tamilRegex = /[\u0B80-\u0BFF]+/g;
   text = text.replace(malRegex, m => `<span class="mahapraana">${m}</span>`);
 
   // ---------------- Tamil ----------------
-  const tamPatterns = sortByLengthDesc([
-  'க்ஹ','க்ஹா','ச்ஹ','ஜ்ஹ','ட்ஹ','ட்ஹா','த்ஹ','த்ஹா','ப்ஹ','ப்ஹா',
-  'ஸ்த்ஹ','ஸ்த்ஹி','ஸ்ப்ஹ','ஸ்ப்ஹு','ந்த்ஹ','ன்த்ஹ','ர்த்ஹ','ண்ட்ஹ',
-  'ச்ஹா','ச்ஹ்','ஸ்வ஛','ச்ஹ்ச','ச்ஹ்த',
-  'ர்ஹ','ப்த்ஹ','ப்த்ஹே','ர்த்ஹ','க்த்ஹ','ந்த்ஹ','ர்த்ஹ்ய','ர்த்ஹா'
+const tamPatterns = sortByLengthDesc([
+  // aspirates and clusters
+  'க்ஹ','க்ஹா','க்ஹி','க்ஹீ','க்ஹு','க்ஹூ','க்ஹெ','க்ஹே','க்ஹொ','க்ஹோ',
+  'ச்ஹ','ச்ஹா','ச்ஹி','ச்ஹீ','ச்ஹு','ச்ஹூ','ச்ஹெ','ச்ஹே','ச்ஹொ','ச்ஹோ',
+  'ஜ்ஹ','ஜ்ஹா','ஜ்ஹி','ஜ்ஹீ','ஜ்ஹு','ஜ்ஹூ','ஜ்ஹெ','ஜ்ஹே','ஜ்ஹொ','ஜ்ஹோ',
+  'ட்ஹ','ட்ஹா','ட்ஹி','ட்ஹீ','ட்ஹு','ட்ஹூ','ட்ஹெ','ட்ஹே','ட்ஹொ','ட்ஹோ',
+  'த்ஹ','த்ஹா','த்ஹி','த்ஹீ','த்ஹு','த்ஹூ','த்ஹெ','த்ஹே','த்ஹொ','த்ஹோ',
+  'ப்ஹ','ப்ஹா','ப்ஹி','ப்ஹீ','ப்ஹு','ப்ஹூ','ப்ஹெ','ப்ஹே','ப்ஹொ','ப்ஹோ',
+  // special clusters
+  'ஸ்த்ஹ','ஸ்த்ஹி','ஸ்த்ஹு','ஸ்ப்ஹ','ஸ்ப்ஹி','ஸ்ப்ஹு','ஸ்ப்ஹா','ஸ்ப்ஹோ',
+  'ந்த்ஹ','ந்த்ஹி','ந்த்ஹு','ந்த்ஹா','ந்த்ஹோ',
+  'ர்த்ஹ','ர்த்ஹி','ர்த்ஹு','ர்த்ஹா','ர்த்ஹோ',
+  'ர்ஹ','ர்ஹா','ர்ஹி','ர்ஹீ','ர்ஹு','ர்ஹூ',
+  // fallback: individual Tamil letters (to highlight single-letter aspirates)
+  'க','ங','ச','ஞ','ஜ','ட','ண','த','ந','ப','ம','ய','ர','ல','வ','ழ','ள','ற','ன'
 ]);
-  const tamRegex = new RegExp(tamPatterns.join('|'), 'g');
-  text = text.replace(tamRegex, m => `<span class="mahapraana">${m}</span>`);
+
+const tamRegex = new RegExp(tamPatterns.join('|'), 'g');
+text = text.replace(tamRegex, m => `<span class="mahapraana">${m}</span>`);
+
 
   // ---------------- English transliteration ----------------
   const engPatterns = sortByLengthDesc([
