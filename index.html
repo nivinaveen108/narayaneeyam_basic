@@ -1024,18 +1024,7 @@ function autoDetectScript(txt) {
 
 
 
-// Auto-detect actual script in this cue
-const detectedLang = autoDetectScript(verseRaw);
-
-// Override UI-selected language ONLY if the text belongs to another script
-const langForHighlight = detectedLang;
-
-// Apply highlight
-// With the new all-scripts version:
-const verseText = highlightMahapraanasAllScripts(verseRaw);
-  const splitText = String(splitRaw).normalize("NFC");
-
-    // auto-detect actual script for highlighting
+  // auto-detect actual script for highlighting
   const lang = autoDetectScript(verseRaw);
   verseDiv.innerHTML = nl2br(highlightMahapraanasAllScripts(verseRaw));
   splitWordsDiv.innerHTML = nl2br(splitRaw);
