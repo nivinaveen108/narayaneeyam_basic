@@ -1699,20 +1699,29 @@ plus10DashakamBtn.addEventListener('click', async () => {
             let translitState = 'devanagari';
                         
             async function loadTranslitCues(dashNum = null) {
-                dashNum = dashNum || String(currentDashakam).padStart(3, '0');
-                let vttFolder = 'vtt_time_devanagari_tamil';
-                if (translitState === 'english') vttFolder = 'vtt_time_devanagari_tamil';
-                else if (translitState === 'devanagari') vttFolder = 'vtt_time_devanagari_english';
-                else if (translitState === 'malayalam') vttFolder = 'vtt_time_devanagari_malayalam';
-            
-                cues = await loadVTT(`${vttFolder}/Narayaneeyam_D${dashNum}.vtt`);
-            
-                showTranslit = translitState === 'english' || translitState === 'malayalam';
-            
-                const idx = currentCueIndex >= 0 ? currentCueIndex : 0;
-                if (cues.length > 0) updateSubtitle(idx);
-                return cues;  
-            }
+    dashNum = dashNum || String(currentDashakam).padStart(3, '0');
+
+    // your current mapping but WITHOUT the broken default
+    let vttFolder;
+    if (translitState === 'english') {
+        vttFolder = 'vtt_time_devanagari_tamil';        // Tamil
+    } else if (translitState === 'devanagari') {
+        vttFolder = 'vtt_time_devanagari_english';      // English translit
+    } else if (translitState === 'malayalam') {
+        vttFolder = 'vtt_time_devanagari_malayalam';    // Malayalam
+    } else {
+        vttFolder = 'vtt_time_devanagari_tamil';        // fallback Tamil
+    }
+
+    cues = await loadVTT(`${vttFolder}/Narayaneeyam_D${dashNum}.vtt`);
+
+    showTranslit = (translitState === 'english' || translitState === 'malayalam');
+
+    const idx = currentCueIndex >= 0 ? currentCueIndex : 0;
+    if (cues.length > 0) updateSubtitle(idx);
+
+    return cues;
+}
             
             // Initial load
             loadTranslitCues();
