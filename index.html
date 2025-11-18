@@ -1732,8 +1732,8 @@ plus10DashakamBtn.addEventListener('click', async () => {
                     translitState = translitState === 'english' ? 'devanagari' :
                                     translitState === 'devanagari' ? 'malayalam' : 'english';
             
-                    translitToggle.textContent = translitState === 'english' ? 'English Transliteration' :
-                                                 translitState === 'devanagari' ? 'Devanagari' : 'Malayalam';
+                    translitToggle.textContent = translitState === 'english' ? 'Tamil' :
+                                                 translitState === 'devanagari' ? 'English' : 'Malayalam';
             
                     await loadTranslitCues();
                 });
