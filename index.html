@@ -1032,19 +1032,17 @@ const lang = !showTranslit
 function autoDetectScript(txt) {
   txt = txt || "";
 
-  // Devanagari
-  if (/[ऄ-ॿ]/.test(txt)) return "devanagari";
+// Devanagari
+if (/[\u0900-\u097F]/.test(txt)) return "devanagari";
 
-  // Malayalam
-  if (/[അ-ൿ]/.test(txt)) return "malayalam";
-
- // Tamil: vowels, consonants, aytam, numerals, and combining marks
+// Tamil (check BEFORE Malayalam!)
 if (/[\u0B80-\u0BFF]/.test(txt)) return "tamil";
 
+// Malayalam
+if (/[\u0D00-\u0D7F]/.test(txt)) return "malayalam";
 
-  // Default to English/translit
-  return "english";
-}
+return "english";
+
 
 
 // Auto-detect actual script in this cue
@@ -1055,7 +1053,7 @@ const langForHighlight = detectedLang;
 
 // Apply highlight
 // With the new all-scripts version:
-const verseText = highlightMahapraanasAllScripts(verseRaw);
+const verseText = highlightMahapraana(verseRaw, langForHighlight);
   const splitText = String(splitRaw).normalize("NFC");
 
   // ------------------------------------------------------------------
@@ -1131,15 +1129,69 @@ const tamilRegex = /[\u0B80-\u0BFF]+/g;
               }
             if (script === 'tamil') {
 // ---------------- Tamil ----------------
-const tamPatterns = sortByLengthDesc([
-  'க³','க⁴','ச³','ஜ⁴','ட³','ட⁴','த³','த⁴','ப³','ப⁴',  // ഖ ഘ ഛ ഝ ഠ ഢ ഥ ധ ഫ ഭ
-  'ஸ்த³','ஸ்தி³','ஸ்ப³','ஸ்பு³','த்ப³','த்க³','த்த³','ண்ட³',  // സ്ഥ സ്ഥി സ്ഫ സ്ഫു ദ്ഭ ദ്ഘ ദ്ധ ണ്ഠ
-  'சா³','ச்³','ஸ்வச³','ச்ச³','ச்த³',  // ഛാ ഛ് സ്വഛ ഛ്ച ഛ്ത
-  'ர்ப³','ப்த³','ப்தெ³','ர்த³','க்த³','ந்த³','ர்த்திய³','ர்த்தா³'  // ർഭ ബ്ധ ബ്ധെ ർഥ ഗ്ധ ந്ധ ർത്ഥ്യ ർത്ഥാ
-]);
+// ------------------------------------------------------
+// TAMIL (expanded with prefixes + suffixes + ³ ⁴ markers)
+// ------------------------------------------------------
 
-const tamRegex = new RegExp(tamPatterns.join('|'), 'g');
+// Expand a Tamil base sequence into all vowel-prefix + vowel-suffix + (³ / ⁴)
+function expandTamil(base) {
+  const pre = ["", "ெ", "ே", "ை", "ொ", "ோ", "ௌ"];   // vowel prefixes
+  const suf = ["", "ா", "ி", "ீ", "ு", "ூ"];         // vowel suffixes
+  const results = [];
+
+  for (const p of pre) {
+    for (const s of suf) {
+      results.push(p + base + s + "³");
+      results.push(p + base + s + "⁴");
+    }
+  }
+  return results;
+}
+
+// Build Tamil mahāprāṇa patterns
+let tamList = [
+  ...expandTamil("க"),    // kha, gha
+  ...expandTamil("ச"),    // cha
+  ...expandTamil("ஜ"),    // jha
+  ...expandTamil("ட"),    // ṭha
+  ...expandTamil("த"),    // tha, dha
+  ...expandTamil("ப"),    // pha, bha
+
+  // Important clusters
+  ...expandTamil("ஸ்த"),
+  ...expandTamil("ஸ்தி"),
+  ...expandTamil("ஸ்ப"),
+  ...expandTamil("ஸ்பு"),
+  ...expandTamil("த்ப"),
+  ...expandTamil("த்க"),
+  ...expandTamil("த்த"),
+  ...expandTamil("ண்ட"),
+
+  // Additional forms
+  ...expandTamil("சா"),
+  ...expandTamil("ச்"),
+  ...expandTamil("ஸ்வச"),
+  ...expandTamil("ச்ச"),
+  ...expandTamil("ச்த"),
+
+  // More clusters
+  ...expandTamil("ர்ப"),
+  ...expandTamil("ப்த"),
+  ...expandTamil("ப்தெ"),
+  ...expandTamil("ர்த"),
+  ...expandTamil("க்த"),
+  ...expandTamil("ந்த"),
+  ...expandTamil("ர்த்திய"),
+  ...expandTamil("ர்த்தா"),
+];
+
+// Build regex, longest first
+const tamPatterns = sortByLengthDesc(tamList);
+const tamRegex = new RegExp(tamPatterns.join("|"), "g");
+
+// Apply highlighting
 text = text.replace(tamRegex, m => `<span class="mahapraana">${m}</span>`);
+
 }
 
               if (script === 'english') {
