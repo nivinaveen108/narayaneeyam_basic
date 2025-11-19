@@ -575,6 +575,20 @@ body.light-theme .top-button:hover {
          .group-select{ min-width:100px; font-size:.95rem; padding:7px 10px; }
          #gotoPanel{ width: calc(100vw - 32px); left:8px; right:8px; top:44px; }
          }
+
+/* General Mahapraana styling */
+.mahapraana {
+  color: red;  /* example, optional */
+  font-weight: bold;
+}
+
+/* Specific font sizes by script */
+.mahapraana.devanagari { font-size: 1.2em; }
+.mahapraana.malayalam { font-size: 1.1em; }
+.mahapraana.tamil { font-size: 1.15em; }
+.mahapraana.english { font-size: 1em; }
+
+
     </style>
 </head>
 
@@ -1174,7 +1188,10 @@ function highlightMahapraanasAllScripts(text) {
     'स्थ','स्थि','स्फ','स्फु','द्भ','द्घ','द्ध','ण्ठ','च्छ','च्छा',
     'र्भ','ब्ध','ब्धे','र्थ','ग्ध','न्ध','र्थ्य','र्था'
   ]);
-  text = text.replace(new RegExp(devanagariPatterns.join('|'), 'g'), m => `<span class="mahapraana">${m}</span>`);
+  text = text.replace(new RegExp(devanagariPatterns.join('|'), 'g'), m => 
+    `<span class="mahapraana devanagari">${m}</span>`
+);
+
 
   // Malayalam
   const malPatterns = sortByLengthDesc([
@@ -1183,7 +1200,10 @@ function highlightMahapraanasAllScripts(text) {
     'ഛാ','ഛ്','സ്വഛ','ഛ്ച','ഛ്ത',
     'ർഭ','ബ്ധ','ബ്ധെ','ർഥ','ഗ്ധ','ന്ധ','ര്‍ത്ഥ്യ','ര്‍ത്ഥാ'
   ]);
-  text = text.replace(new RegExp(malPatterns.join('|'), 'g'), m => `<span class="mahapraana">${m}</span>`);
+  text = text.replace(new RegExp(malPatterns.join('|'), 'g'), m => 
+    `<span class="mahapraana malayalam">${m}</span>`
+);
+
 
   // Tamil
   const tamPatterns = sortByLengthDesc([
@@ -1219,7 +1239,10 @@ function highlightMahapraanasAllScripts(text) {
   'ர்த்திய²','ர்த்தியா²','ர்த்தியி²','ர்த்தியீ²','ர்த்தியு²','ர்த்தியூ²','ர்த்தியே²','ர்த்தியே²','ர்த்தியை²','ர்த்தியொ²','ர்த்தியோ²','ர்த்தியௌ²',
   'ர்த்தா²','ர்த்தாா²','ர்த்தாி²','ர்த்தாீ²','ர்த்தாு²','ர்த்தாூ²','ர்த்தாெ²','ர்த்தாே²','ர்த்தாை²','ர்த்தாொ²','ர்த்தாோ²','ர்த்தாௌ²'
 ]);
-  text = text.replace(new RegExp(tamPatterns.join('|'), 'g'), m => `<span class="mahapraana">${m}</span>`);
+  text = text.replace(new RegExp(tamPatterns.join('|'), 'g'), m => 
+    `<span class="mahapraana tamil">${m}</span>`
+);
+
 
   // English
   const engPatterns = sortByLengthDesc([
@@ -1227,7 +1250,10 @@ function highlightMahapraanasAllScripts(text) {
     'stha','sthi','sph','sphu','dbh','ddh','ṇṭh',
     'cch','cchā','svacch','rbh','bdh','bdhe','rth','gdh','ndh','rthya','rthā'
   ]);
-  text = text.replace(new RegExp(engPatterns.join('|'), 'gi'), m => `<span class="mahapraana">${m}</span>`);
+  text = text.replace(new RegExp(engPatterns.join('|'), 'gi'), m => 
+    `<span class="mahapraana english">${m}</span>`
+);
+
 
   return text;
 }
