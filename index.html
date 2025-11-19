@@ -1132,11 +1132,39 @@ const tamilRegex = /[\u0B80-\u0BFF]+/g;
             if (script === 'tamil') {
 // ---------------- Tamil ----------------
 const tamPatterns = sortByLengthDesc([
-  'க³','க⁴','ச³','ஜ⁴','ட³','ட⁴','த³','த⁴','ப³','ப⁴',
-  'ஸ்த³','ஸ்தி³','ஸ்ப³','ஸ்பு³','த்ப⁴','த்க⁴','த்த⁴','ண்ட³',
-  'சா³','ச்³','സ്വച്ച³','ച്ച³','ச்த³',
-  'ர்ப⁴','ப்த⁴','ப்தெ⁴','ர்த³','க்த⁴','ந்த⁴','ர்த்திய³','ர்த்தா³'
+  // Aspirated stops (Tamil Vedic notation)
+  'க³','க⁴',
+  'ச³','ச⁴',
+  'ட³','ட⁴',
+  'த³','த⁴',
+  'ப³','ப⁴',
+
+  // Special Grantha letters used for Sanskrit
+  'ஜ³','ஜ⁴',
+  'ஷ³','ஷ⁴',
+  'ஸ³','ஸ⁴',
+
+  // Long + aspirated
+  'கா³','கா⁴',
+  'சா³','சா⁴',
+  'டா³','டா⁴',
+  'தா³','தா⁴',
+  'பா³','பா⁴',
+
+  // Final + aspirated
+  'க்³','க்⁴',
+  'ச்³','ச்⁴',
+  'ட்³','ட்⁴',
+  'த்³','த்⁴',
+  'ப்³','ப்⁴',
+
+  // Nasal + aspirated clusters actually used
+  'ந்³','ந்⁴',
+  'ம்³','ம்⁴',
+  'ண்³','ண்⁴',
+  'ன்³','ன்⁴'
 ]);
+
 
 const tamRegex = new RegExp(tamPatterns.join('|'), 'g');
 text = text.replace(tamRegex, m => `<span class="mahapraana">${m}</span>`);
@@ -1183,11 +1211,39 @@ text = text.replace(tamRegex, m => `<span class="mahapraana">${m}</span>`);
 
 // ---------------- Tamil ----------------
 const tamPatterns = sortByLengthDesc([
-  'க³','க⁴','ச³','ஜ⁴','ட³','ட⁴','த³','த⁴','ப³','ப⁴',
-  'ஸ்த³','ஸ்தி³','ஸ்ப³','ஸ்பு³','த்ப⁴','த்க⁴','த்த⁴','ண்ட³',
-  'சா³','ச்³','സ്വച്ച³','ച്ച³','ச்த³',
-  'ர்ப⁴','ப்த⁴','ப்தெ⁴','ர்த³','க்த⁴','ந்த⁴','ர்த்திய³','ர்த்தா³'
+  // Aspirated stops (Tamil Vedic notation)
+  'க³','க⁴',
+  'ச³','ச⁴',
+  'ட³','ட⁴',
+  'த³','த⁴',
+  'ப³','ப⁴',
+
+  // Special Grantha letters used for Sanskrit
+  'ஜ³','ஜ⁴',
+  'ஷ³','ஷ⁴',
+  'ஸ³','ஸ⁴',
+
+  // Long + aspirated
+  'கா³','கா⁴',
+  'சா³','சா⁴',
+  'டா³','டா⁴',
+  'தா³','தா⁴',
+  'பா³','பா⁴',
+
+  // Final + aspirated
+  'க்³','க்⁴',
+  'ச்³','ச்⁴',
+  'ட்³','ட்⁴',
+  'த்³','த்⁴',
+  'ப்³','ப்⁴',
+
+  // Nasal + aspirated clusters actually used
+  'ந்³','ந்⁴',
+  'ம்³','ம்⁴',
+  'ண்³','ண்⁴',
+  'ன்³','ன்⁴'
 ]);
+
 
 const tamRegex = new RegExp(tamPatterns.join('|'), 'g');
 text = text.replace(tamRegex, m => `<span class="mahapraana">${m}</span>`);
