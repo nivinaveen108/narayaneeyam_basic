@@ -1203,7 +1203,7 @@ const verseText = highlightMahapraanasAllScripts(verseRaw);
                 const engPatterns = sortByLengthDesc([
                   'kh','gh','chh','jh','ṭh','ḍh','th','dh','ph','bh',
                   'stha','sthi','sph','sphu','dbh','ddh','ṇṭh',
-                  'cch','cchā','svacch','rbh','bdh','bdhe','rth','gdh','ndh','rthya','rthā'
+                  'cch','cchā','svacch','rbh','bdh','bdhe','rth','gdh','ndh','rthya','rthā','ṣṭh'
                 ]);
                 const re = new RegExp(engPatterns.join('|'), 'gi');
                 return text.replace(re, m => `<span class="mahapraana">${m}</span>`);
